@@ -49,10 +49,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px 0}
 .stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:10px 8px 8px;text-align:center;box-shadow:var(--shadow)}
 .stat-val{font-size:20px;font-weight:700;line-height:1}
-.stat-val.green{color:var(--green)}.stat-val.blue{color:var(--blue)}.stat-val.amber{color:var(--amber)}
+.stat-val.green{color:var(--green)}.stat-val.blue{color:var(--blue)}.stat-val.amber{color:var(--amber)}.stat-val.red{color:var(--red)}
 .stat-lbl{font-size:10px;color:var(--gray-400);margin-top:3px;line-height:1.2}
 .tabs{display:flex;padding:10px 12px 0;gap:4px}
-.tab{flex:1;padding:8px 4px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;color:var(--gray-600);font-size:12px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:3px}
+.tab{flex:1;padding:8px 4px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;color:var(--gray-600);font-size:11px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:3px}
 .tab.active{background:var(--green);color:#fff;border-color:var(--green)}
 .content{padding:10px 12px 80px}
 .search-row{display:flex;gap:8px;margin-bottom:10px}
@@ -60,6 +60,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .search-input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:#fff;color:var(--gray-900);font-family:inherit}
 .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-size:16px;pointer-events:none}
 .filter-sel{padding:9px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:#fff;color:var(--gray-900);font-family:inherit}
+/* CLIENT CARD */
 .client-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
 .client-card-top{padding:14px 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .client-nom{font-size:16px;font-weight:700}
@@ -70,9 +71,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .client-stat-tag.alerte{background:var(--red-light);color:var(--red)}
 .client-stat-tag.vieilli{background:#FFF3CD;color:#856404}
 .client-stat-tag.contenants{background:var(--blue-light);color:var(--blue-text)}
+.client-stat-tag.planifie{background:var(--purple-light);color:var(--purple-text)}
+/* CHANTIER CARD */
 .chantier-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden}
 .chantier-card.alerte{border-left:4px solid #E24B4A}
 .chantier-card.vieilli{border-left:4px solid #FFC107}
+.chantier-card.cloture{opacity:.7}
 .chantier-top{padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 .chantier-nom{font-size:15px;font-weight:700}
 .chantier-adresse{font-size:12px;color:var(--gray-600);margin-top:3px;display:flex;align-items:center;gap:3px}
@@ -82,10 +86,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge.vide{background:var(--gray-100);color:var(--gray-600)}
 .badge.vieilli{background:#FFF3CD;color:#856404;border:1px solid #FFC107}
 .badge.cloture{background:var(--gray-100);color:var(--gray-400)}
+.badge.planifie{background:var(--purple-light);color:var(--purple-text)}
 .vieill-days{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#856404;background:#FFF3CD;border:1px solid #FFC107;border-radius:20px;padding:2px 7px;margin-left:4px}
 .chantier-contact{padding:0 14px 8px;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-600)}
 .chantier-bsd{padding:0 14px 8px}
 .bsd-badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal-light);border:1px solid var(--teal-border);border-radius:var(--radius-sm);padding:4px 9px;font-size:12px;color:var(--teal-text);font-weight:600}
+.planif-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple-light);border:1px solid var(--purple-border);border-radius:var(--radius-sm);padding:4px 9px;font-size:12px;color:var(--purple-text);font-weight:600;margin:0 14px 8px}
 .contenants-row{padding:0 14px 10px;display:flex;gap:6px;flex-wrap:wrap}
 .tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:4px 9px;border-radius:20px}
 .tag.cp{background:var(--green-light);color:var(--green-text)}
@@ -100,7 +106,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .chantier-btn:last-child{border-right:none}
 .chantier-btn:active{background:var(--gray-50)}
 .chantier-btn i{font-size:17px}
-.chantier-btn.green{color:var(--green)}.chantier-btn.red{color:var(--red)}.chantier-btn.blue{color:var(--blue)}.chantier-btn.orange{color:var(--orange)}.chantier-btn.teal{color:var(--teal)}.chantier-btn.amber{color:var(--amber)}
+.chantier-btn.green{color:var(--green)}.chantier-btn.red{color:var(--red)}.chantier-btn.blue{color:var(--blue)}.chantier-btn.orange{color:var(--orange)}.chantier-btn.teal{color:var(--teal)}.chantier-btn.amber{color:var(--amber)}.chantier-btn.purple{color:var(--purple)}
+/* DASHBOARD */
+.dashboard-section{margin-bottom:14px}
+.dashboard-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.alert-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
+.alert-item{padding:10px 14px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;cursor:pointer}
+.alert-item:last-child{border-bottom:none}
+.alert-item:active{background:var(--gray-50)}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.alert-dot.rouge{background:var(--red)}.alert-dot.orange{background:var(--orange)}.alert-dot.amber{background:#D97706}.alert-dot.purple{background:var(--purple)}
+.alert-main{flex:1;min-width:0}
+.alert-nom{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alert-sub{font-size:11px;color:var(--gray-400);margin-top:1px}
+.alert-right{font-size:11px;font-weight:600;flex-shrink:0}
+/* HISTORIQUE */
 .histo-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
 .histo-item{padding:11px 14px;border-bottom:1px solid var(--gray-100);cursor:pointer}
 .histo-item:last-child{border-bottom:none}
@@ -120,6 +140,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .type-pill.depot{background:var(--green-light);color:var(--green-text)}
 .type-pill.echange{background:var(--blue-light);color:var(--blue-text)}
 .type-pill.enlevement{background:var(--orange-light);color:var(--orange)}
+/* DETAIL */
 .detail-photo{width:100%;border-radius:var(--radius);object-fit:cover;max-height:200px;margin-bottom:12px;border:1px solid var(--border)}
 .detail-section{margin-bottom:14px}
 .detail-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:8px;display:flex;align-items:center;gap:5px}
@@ -134,18 +155,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .bsd-detail-type{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--teal-border);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--teal-text);margin-top:6px}
 .detail-actions{display:flex;gap:8px;margin-bottom:14px}
 .detail-action-btn{flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
+.detail-action-btn.edit{color:var(--blue);border-color:var(--blue-light)}
 .detail-action-btn.delete{color:var(--red);border-color:var(--red-light)}
-/* Blocs résumé dans le détail */
 .recap-bloc{border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}
 .recap-bloc.green{background:var(--green-light);border:1px solid #A5D6A7}
 .recap-bloc.blue{background:var(--blue-light);border:1px solid #BFDBFE}
 .recap-bloc.orange{background:var(--orange-light);border:1px solid var(--orange-border)}
+.recap-bloc.gray{background:var(--gray-50);border:1px solid var(--border)}
 .recap-bloc-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .recap-bloc.green .recap-bloc-title{color:var(--green-text)}
 .recap-bloc.blue .recap-bloc-title{color:var(--blue-text)}
 .recap-bloc.orange .recap-bloc-title{color:var(--orange)}
+.recap-bloc.gray .recap-bloc-title{color:var(--gray-600)}
 .recap-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
 .recap-row:last-child{border-bottom:none}
+/* RAPPORT */
+.rapport-header{background:var(--green);color:#fff;padding:16px;border-radius:var(--radius) var(--radius) 0 0;margin-bottom:0}
+.rapport-body{background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:16px;margin-bottom:14px}
+/* EMPTY */
 .empty-state{text-align:center;padding:40px 20px;color:var(--gray-400)}
 .empty-state i{font-size:40px;margin-bottom:10px;display:block}
 .empty-state p{font-size:14px;margin-bottom:14px}
@@ -163,11 +190,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .form-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray-400);margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .field{margin-bottom:12px}
 .field label{font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
-.field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:#fff;color:var(--gray-900);font-family:inherit}
-.field input:focus,.field select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.12)}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:#fff;color:var(--gray-900);font-family:inherit}
+.field textarea{resize:vertical;min-height:70px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,50,.12)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .field-row3{display:grid;grid-template-columns:2fr 1fr;gap:10px}
-/* TYPE OPÉRATION */
 .op-type-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
 .op-type-btn{padding:12px 6px;border:2px solid var(--border);border-radius:var(--radius);background:#fff;cursor:pointer;text-align:center;font-family:inherit}
 .op-type-btn i{font-size:24px;display:block;margin-bottom:5px}
@@ -179,12 +206,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .op-type-btn.selected.echange i,.op-type-btn.selected.echange .op-label{color:var(--blue-text)}
 .op-type-btn.selected.enlevement{border-color:var(--orange);background:var(--orange-light)}
 .op-type-btn.selected.enlevement i,.op-type-btn.selected.enlevement .op-label{color:var(--orange)}
-/* STOCK ACTUEL */
 .stock-actuel{background:var(--gray-50);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin-bottom:14px}
 .stock-actuel-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:8px}
-.stock-actuel-items{display:flex;gap:6px;flex-wrap:wrap}
+.stock-chips{display:flex;gap:6px;flex-wrap:wrap}
 .stock-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:#fff;border:1px solid var(--border)}
-/* GRILLE CONTENANTS */
 .contenants-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .contenant-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 10px 8px;background:#fff}
 .contenant-label{font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:8px}
@@ -192,7 +217,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .qty-btn{width:38px;height:38px;background:var(--gray-50);border:none;font-size:20px;cursor:pointer;color:var(--gray-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit}
 .qty-btn:active{background:var(--gray-200)}
 .qty-val{flex:1;text-align:center;font-size:16px;font-weight:700;border:none;background:none;font-family:inherit;width:100%;color:var(--gray-900)}
-/* PREVIEW STOCK */
 .preview-stock{margin-top:12px;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);display:none}
 .preview-stock-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:8px}
 .preview-items{display:flex;gap:6px;flex-wrap:wrap}
@@ -200,7 +224,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .preview-chip.added{background:var(--green-light);color:var(--green-text)}
 .preview-chip.removed{background:var(--red-light);color:var(--red)}
 .preview-chip.unchanged{background:var(--gray-100);color:var(--gray-600)}
-/* BSD */
 .bsd-block{background:var(--teal-light);border:1px solid var(--teal-border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px}
 .bsd-block-title{font-size:12px;font-weight:700;color:var(--teal-text);margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.4px}
 .bsd-block .field{margin-bottom:10px}.bsd-block .field:last-child{margin-bottom:0}
@@ -213,7 +236,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .bsd-type-btn.selected{border-color:var(--teal);background:var(--teal)}
 .bsd-type-btn.selected .bsd-btn-label{color:#fff}
 .bsd-type-btn.selected .bsd-btn-sub{color:rgba(255,255,255,.75)}
-/* ADDRESS */
 .address-block{background:var(--purple-light);border:1px solid var(--purple-border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px}
 .address-block-title{font-size:12px;font-weight:700;color:var(--purple-text);margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.4px}
 .address-block .field{margin-bottom:10px}.address-block .field:last-child{margin-bottom:0}
@@ -238,8 +260,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sig-clear{position:absolute;top:6px;right:8px;background:var(--gray-100);border:none;color:var(--gray-400);cursor:pointer;font-size:12px;font-family:inherit;padding:4px 8px;border-radius:var(--radius-sm)}
 .btn-submit{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-submit:active{background:var(--green-dark)}
-.btn-submit.orange{background:var(--orange)}.btn-submit.blue{background:var(--blue)}.btn-submit.red{background:var(--red)}
+.btn-submit.orange{background:var(--orange)}.btn-submit.blue{background:var(--blue)}.btn-submit.red{background:var(--red)}.btn-submit.purple{background:var(--purple)}.btn-submit.teal{background:var(--teal)}
 .btn-secondary{width:100%;padding:12px;background:none;color:var(--gray-600);border:1px solid var(--border);border-radius:var(--radius);font-size:14px;cursor:pointer;margin-top:8px;font-family:inherit}
+.btn-small-toggle{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:var(--radius-sm);background:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:6px;margin-top:4px}
+.btn-small-toggle.green{border:1px dashed var(--green);color:var(--green-text)}
+.btn-small-toggle.red{border:1px dashed var(--red);color:var(--red)}
 .param-block{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
 .param-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .param-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-100);gap:10px}
@@ -272,15 +297,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .menu-item:last-child{border-bottom:none}
 .menu-item:active{background:var(--gray-50)}
 .menu-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.menu-icon.green{background:var(--green-light);color:var(--green)}.menu-icon.blue{background:var(--blue-light);color:var(--blue)}.menu-icon.red{background:var(--red-light);color:var(--red)}.menu-icon.gray{background:var(--gray-100);color:var(--gray-600)}
+.menu-icon.green{background:var(--green-light);color:var(--green)}.menu-icon.blue{background:var(--blue-light);color:var(--blue)}.menu-icon.red{background:var(--red-light);color:var(--red)}.menu-icon.gray{background:var(--gray-100);color:var(--gray-600)}.menu-icon.purple{background:var(--purple-light);color:var(--purple)}
 .menu-item-label{font-size:15px;font-weight:600;color:var(--gray-900)}
 .menu-item-sub{font-size:12px;color:var(--gray-400);margin-top:2px}
 .section{display:none}.section.active{display:block}
-/* Séparateur visuel entre sections du formulaire */
-.section-divider{height:1px;background:var(--gray-100);margin:16px 0}
-.section-header{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-/* Alerte clôture */
-.cloture-info{background:#FFF3CD;border:1px solid #FFC107;border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:#856404;margin-top:8px;display:none}
 @media(min-width:480px){.modal,.menu-sheet{border-radius:var(--radius-lg);margin:auto}.modal-overlay,.menu-overlay{align-items:center}}
 @media print{body{background:#fff}.no-print{display:none!important}.pdf-preview{border:none;padding:0}}
 </style>
@@ -309,26 +329,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="btn-sync" onclick="syncNow()">↻</button>
   </div>
 
-  <div id="vieill-banner" style="display:none" class="vieill-banner" onclick="goToClients()">
+  <div id="vieill-banner" style="display:none" class="vieill-banner" onclick="switchTab('dashboard',null)">
     <i class="ti ti-clock-exclamation"></i>
     <span id="vieill-banner-txt"></span>
-    <span style="margin-left:auto;font-size:11px;opacity:.7">Voir →</span>
+    <span style="margin-left:auto;font-size:11px;opacity:.7">Tableau de bord →</span>
   </div>
 
   <div class="stats-bar">
     <div class="stat-card"><div class="stat-val blue" id="s-total">—</div><div class="stat-lbl">Contenants</div></div>
     <div class="stat-card"><div class="stat-val blue" id="s-chantiers">—</div><div class="stat-lbl">Chantiers</div></div>
     <div class="stat-card"><div class="stat-val green" id="s-clients">—</div><div class="stat-lbl">Clients</div></div>
-    <div class="stat-card"><div class="stat-val amber" id="s-alertes">—</div><div class="stat-lbl">À collecter</div></div>
+    <div class="stat-card"><div class="stat-val red" id="s-alertes">—</div><div class="stat-lbl">Alertes</div></div>
   </div>
 
   <div class="tabs">
+    <button class="tab" onclick="switchTab('dashboard',this)"><i class="ti ti-layout-dashboard" style="font-size:12px"></i> Tableau</button>
     <button class="tab active" onclick="switchTab('clients',this)"><i class="ti ti-users" style="font-size:12px"></i> Clients</button>
     <button class="tab" onclick="switchTab('historique',this)"><i class="ti ti-history" style="font-size:12px"></i> Historique</button>
     <button class="tab" onclick="switchTab('params',this)"><i class="ti ti-settings" style="font-size:12px"></i> Paramètres</button>
   </div>
 
   <div class="content">
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard" class="section">
+      <div id="dashboard-content"></div>
+    </div>
+
+    <!-- CLIENTS -->
     <div id="tab-clients" class="section active">
       <div id="view-clients">
         <div class="search-row">
@@ -343,6 +370,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
             <option value="tous">Tous</option>
             <option value="vieilli">⏰ En retard</option>
             <option value="alerte">🔴 À collecter</option>
+            <option value="planifie">📅 Planifié</option>
             <option value="actif">✓ Actifs</option>
             <option value="cloture">Clôturés</option>
           </select>
@@ -351,13 +379,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
 
+    <!-- HISTORIQUE -->
     <div id="tab-historique" class="section">
       <div class="search-row">
-        <div class="search-wrap"><i class="ti ti-search search-icon"></i><input class="search-input" id="search-histo" type="text" placeholder="Rechercher…" oninput="renderHistorique()"></div>
+        <div class="search-wrap"><i class="ti ti-search search-icon"></i><input class="search-input" id="search-histo" type="text" placeholder="Rechercher client, chantier, BSD…" oninput="renderHistorique()"></div>
+        <select class="filter-sel" id="filter-histo" onchange="renderHistorique()">
+          <option value="tous">Tous</option>
+          <option value="depot">Dépôts</option>
+          <option value="echange">Échanges</option>
+          <option value="enlevement">Enlèvements</option>
+        </select>
       </div>
       <div id="historique-list"></div>
     </div>
 
+    <!-- PARAMS -->
     <div id="tab-params" class="section">
       <div class="param-block">
         <div class="param-title"><i class="ti ti-clock-exclamation" style="color:var(--amber)"></i> Alerte vieillissement</div>
@@ -428,8 +464,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="field"><label>Téléphone</label><input id="ch-contact-tel" placeholder="06 12 34 56 78" inputmode="tel"></div>
       <div class="field"><label>Fonction</label><input id="ch-contact-role" placeholder="Ex: Chef de chantier…"></div>
     </div>
+    <div class="field"><label>Prochaine collecte prévue (optionnel)</label><input type="date" id="ch-prochaine-collecte"></div>
     <button class="btn-submit" onclick="saveChantier()"><i class="ti ti-check"></i> Enregistrer le chantier</button>
     <button class="btn-secondary" onclick="closeModal('modal-chantier')">Annuler</button>
+  </div>
+</div>
+
+<!-- MODAL STOCK MANUEL -->
+<div class="modal-overlay" id="modal-stock" onclick="handleOverlayClick(event,'modal-stock')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>Corriger le stock</h2>
+    <div class="modal-subtitle" id="stock-modal-sub">Saisir le stock réel actuellement sur le chantier</div>
+    <div class="contenants-grid" id="stock-grid"></div>
+    <div style="margin-top:10px;padding:10px 12px;background:var(--amber-light);border-radius:var(--radius-sm);font-size:12px;color:var(--amber)">
+      <i class="ti ti-info-circle"></i> Cette correction ne crée pas d'intervention dans l'historique.
+    </div>
+    <button class="btn-submit" onclick="saveStockManuel()"><i class="ti ti-check"></i> Appliquer la correction</button>
+    <button class="btn-secondary" onclick="closeModal('modal-stock')">Annuler</button>
   </div>
 </div>
 
@@ -439,8 +491,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="modal-handle"></div>
     <h2 id="interv-title">Intervention</h2>
     <div class="modal-subtitle" id="interv-sub"></div>
-
-    <!-- TYPE -->
     <div class="op-type-grid">
       <button class="op-type-btn depot selected" id="op-depot" onclick="selectOpType('depot')">
         <i class="ti ti-package" style="color:var(--green-text)"></i>
@@ -458,77 +508,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="op-sub">Retrait site</div>
       </button>
     </div>
-
     <div class="field"><label>Date d'intervention</label><input type="date" id="i-date"></div>
     <div class="field"><label>Note</label><input id="i-note" placeholder="Ex: Fût plein côté compresseur…"></div>
-
-    <!-- STOCK ACTUEL (lecture seule, affiché en contexte) -->
     <div class="stock-actuel" id="i-stock-actuel">
       <div class="stock-actuel-title">Stock actuel sur le chantier</div>
-      <div class="stock-actuel-items" id="i-stock-actuel-items"></div>
+      <div class="stock-chips" id="i-stock-actuel-items"></div>
     </div>
-
-    <!-- SECTION PRINCIPALE selon type -->
-
-    <!-- DÉPÔT : contenants ajoutés -->
     <div id="zone-depot" class="form-section">
-      <div class="section-header" id="depot-header">
-        <i class="ti ti-package" style="font-size:14px;color:var(--green)"></i>
-        Contenants déposés ce jour
-      </div>
-      <div class="contenants-grid" id="i-depot-grid"></div>
+      <div class="form-section-title"><i class="ti ti-package" style="font-size:14px;color:var(--green)"></i> Contenants déposés ce jour</div>
+      <div id="i-depot-grid"></div>
     </div>
-
-    <!-- ÉCHANGE : pas de saisie obligatoire + optionnel ajout/retrait -->
     <div id="zone-echange" style="display:none" class="form-section">
-      <div class="section-header">
-        <i class="ti ti-arrows-exchange" style="font-size:14px;color:var(--blue)"></i>
-        Échange — plein ↔ vide
-      </div>
-      <div style="font-size:12px;color:var(--gray-400);margin-bottom:12px;padding:8px 12px;background:var(--blue-light);border-radius:var(--radius-sm)">
-        Le stock ne change pas. Utilise les sections ci-dessous si tu deposes ou retires des contenants supplémentaires.
-      </div>
+      <div class="form-section-title"><i class="ti ti-arrows-exchange" style="font-size:14px;color:var(--blue)"></i> Échange — plein ↔ vide</div>
+      <div style="font-size:12px;color:var(--blue-text);padding:8px 12px;background:var(--blue-light);border-radius:var(--radius-sm);margin-bottom:10px">Stock inchangé. Utilise les boutons ci-dessous si tu déposes ou retires en plus.</div>
     </div>
-
-    <!-- ENLÈVEMENT : contenants retirés (avec quantités) -->
     <div id="zone-enlevement" style="display:none" class="form-section">
-      <div class="section-header">
-        <i class="ti ti-truck-loading" style="font-size:14px;color:var(--orange)"></i>
-        Contenants retirés du site
-      </div>
-      <div class="contenants-grid" id="i-enlevement-grid"></div>
-      <div class="cloture-info" id="i-cloture-info">
-        <i class="ti ti-info-circle"></i> Si tu retires tout, le chantier sera automatiquement clôturé.
-      </div>
+      <div class="form-section-title"><i class="ti ti-truck-loading" style="font-size:14px;color:var(--orange)"></i> Contenants retirés du site</div>
+      <div id="i-enlevement-grid"></div>
     </div>
-
-    <!-- AJOUT SUPPLÉMENTAIRE (visible pour échange et enlèvement) -->
     <div id="zone-ajout-supp" style="display:none" class="form-section">
-      <div class="section-header">
-        <i class="ti ti-circle-plus" style="font-size:14px;color:var(--green)"></i>
-        Contenants déposés en plus
-      </div>
-      <div class="contenants-grid" id="i-ajout-grid"></div>
+      <div class="form-section-title"><i class="ti ti-circle-plus" style="font-size:14px;color:var(--green)"></i> Contenants déposés en plus</div>
+      <div id="i-ajout-grid"></div>
     </div>
-
-    <!-- RETRAIT SUPPLÉMENTAIRE (visible pour dépôt) -->
     <div id="zone-retrait-supp" style="display:none" class="form-section">
-      <div class="section-header">
-        <i class="ti ti-circle-minus" style="font-size:14px;color:var(--red)"></i>
-        Contenants retirés en plus
-      </div>
-      <div class="contenants-grid" id="i-retrait-grid"></div>
+      <div class="form-section-title"><i class="ti ti-circle-minus" style="font-size:14px;color:var(--red)"></i> Contenants retirés en plus</div>
+      <div id="i-retrait-grid"></div>
     </div>
-
-    <!-- BOUTONS OPTIONNELS -->
-    <div id="zone-toggle-btns" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
-
-    <!-- PRÉVISUALISATION DU NOUVEAU STOCK -->
+    <div id="zone-toggle-btns" style="margin-top:8px;flex-wrap:wrap"></div>
     <div class="preview-stock" id="i-preview-stock">
       <div class="preview-stock-title">Nouveau stock après intervention</div>
       <div class="preview-items" id="i-preview-items"></div>
     </div>
-
     <!-- BSD -->
     <div class="form-section">
       <div class="form-section-title"><i class="ti ti-file-certificate" style="font-size:14px;color:var(--teal)"></i> BSD / BSDA (optionnel)</div>
@@ -545,7 +555,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </div>
       </div>
     </div>
-
     <!-- PHOTO -->
     <div class="form-section">
       <div class="form-section-title"><i class="ti ti-camera" style="font-size:14px;color:var(--gray-400)"></i> Photo (optionnel)</div>
@@ -556,7 +565,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
       <input type="file" id="i-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(event)">
     </div>
-
     <!-- SIGNATURE -->
     <div class="form-section">
       <div class="form-section-title"><i class="ti ti-signature" style="font-size:14px;color:var(--gray-400)"></i> Signature (optionnel)</div>
@@ -566,9 +574,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button class="sig-clear" onclick="clearSig()">Effacer</button>
       </div>
     </div>
-
     <button class="btn-submit" id="i-submit-btn" onclick="submitIntervention()"><i class="ti ti-check"></i> Enregistrer</button>
     <button class="btn-secondary" onclick="closeModal('modal-intervention')">Annuler</button>
+  </div>
+</div>
+
+<!-- MODAL EDIT INTERVENTION -->
+<div class="modal-overlay" id="modal-edit-interv" onclick="handleOverlayClick(event,'modal-edit-interv')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>Modifier l'intervention</h2>
+    <div class="modal-subtitle" id="edit-interv-sub"></div>
+    <div class="field"><label>Date</label><input type="date" id="ei-date"></div>
+    <div class="field"><label>Note</label><input id="ei-note"></div>
+    <div class="field"><label>N° BSD</label><input id="ei-bsd-num" style="font-family:monospace;text-transform:uppercase"></div>
+    <div class="field"><label>Nature du déchet</label><input id="ei-bsd-dechet"></div>
+    <div class="form-section">
+      <div class="form-section-title"><i class="ti ti-package" style="font-size:14px;color:var(--green)"></i> Contenants déposés</div>
+      <div id="ei-depot-grid"></div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title"><i class="ti ti-truck-loading" style="font-size:14px;color:var(--orange)"></i> Contenants retirés</div>
+      <div id="ei-retrait-grid"></div>
+    </div>
+    <div style="margin-top:10px;padding:10px 12px;background:#FFF3CD;border-radius:var(--radius-sm);font-size:12px;color:#856404">
+      <i class="ti ti-refresh"></i> Le stock du chantier sera recalculé automatiquement.
+    </div>
+    <button class="btn-submit" onclick="saveEditInterv()"><i class="ti ti-check"></i> Enregistrer les modifications</button>
+    <button class="btn-secondary" onclick="closeModal('modal-edit-interv')">Annuler</button>
   </div>
 </div>
 
@@ -578,6 +611,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="modal-handle"></div>
     <h2 id="detail-title">Détail</h2>
     <div class="detail-actions no-print">
+      <button class="detail-action-btn edit" onclick="openEditInterv(currentDetailId)"><i class="ti ti-pencil"></i> Modifier</button>
       <button class="detail-action-btn delete" onclick="deleteIntervention(currentDetailId)"><i class="ti ti-trash"></i> Supprimer</button>
     </div>
     <div id="detail-content"></div>
@@ -596,6 +630,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <button class="btn-submit" onclick="window.print()" style="flex:1"><i class="ti ti-printer"></i> Imprimer / PDF</button>
       <button class="btn-secondary" onclick="closeModal('modal-pdf')" style="margin-top:0;flex:1">Fermer</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL RAPPORT CLIENT -->
+<div class="modal-overlay" id="modal-rapport" onclick="handleOverlayClick(event,'modal-rapport')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>Rapport client</h2>
+    <div class="modal-subtitle" id="rapport-sub"></div>
+    <div class="field-row" style="margin-bottom:12px">
+      <div class="field"><label>Du</label><input type="date" id="r-debut"></div>
+      <div class="field"><label>Au</label><input type="date" id="r-fin"></div>
+    </div>
+    <button class="btn-submit" style="background:var(--purple)" onclick="genererRapport()"><i class="ti ti-file-analytics"></i> Générer le rapport</button>
+    <div id="rapport-content" style="margin-top:14px"></div>
+    <button class="btn-secondary no-print" onclick="closeModal('modal-rapport')">Fermer</button>
   </div>
 </div>
 
@@ -625,27 +675,20 @@ const CONTENANTS=[
 ];
 const TYPE_LABELS={depot:'Dépôt',echange:'Échange',enlevement:'Enlèvement'};
 
-// ─── STATE ───────────────────────────────────────────────
-// intervention : {id, clientId, chantierId, clientNom, chantierNom, type, date, note,
-//   bsdNum, bsdType, bsdDechet, photo, signature,
-//   stockAvant:{...},   ← stock avant l'intervention
-//   depot:{...},        ← quantités DÉPOSÉES (dépôt + supplémentaire)
-//   retrait:{...},      ← quantités RETIRÉES (enlèvement + supplémentaire)
-//   stockApres:{...}    ← stock FINAL calculé
-// }
-
 let state={clients:[],chantiers:[],interventions:[],nextClientId:1,nextChantierId:1,nextIntervId:1,params:{delai:60}};
 let currentTab='clients';
 let currentClientId=null;
 let currentChantierId=null;
 let currentDetailId=null;
-let editingId=null;
+let editingClientId=null;
+let editingChantierId=null;
+let editingIntervId=null;
+let stockManuelChantierId=null;
 let currentOpType='depot';
 let intervPhoto=null,intervBSDType=null;
+let showAjoutSupp=false,showRetraitSupp=false;
 const sigState={canvas:null,ctx:null,hasSig:false};
-// Zones optionnelles visibles
-let showAjoutSupp=false;
-let showRetraitSupp=false;
+let rapportClientId=null;
 
 // ─── CLOUD ───────────────────────────────────────────────
 async function loadFromCloud(){
@@ -658,28 +701,31 @@ async function loadFromCloud(){
     if(!state.params)state.params={delai:60};
     if(!state.chantiers)state.chantiers=[];
     if(!state.interventions)state.interventions=[];
-    // Migration
-    state.chantiers.forEach(ch=>{
-      CONTENANTS.forEach(ct=>{if(ch[ct.key]===undefined)ch[ct.key]=0;});
-      if(ch.cp!==undefined&&ch.codePostal===undefined){ch.codePostal=ch.cp;delete ch.cp;}
-    });
-    state.interventions.forEach(i=>{
-      if(!i.stockApres){
-        // Ancien format — construire stockApres depuis les clés directes
-        const s={};CONTENANTS.forEach(ct=>{s[ct.key]=i[ct.key]||0;});
-        i.stockApres=s;
-        if(i.type==='depot'){i.depot=s;i.retrait=zeroStock();}
-        else if(i.type==='echange'){i.depot=zeroStock();i.retrait=zeroStock();}
-        else{i.retrait=s;i.depot=zeroStock();}
-        if(!i.stockAvant)i.stockAvant=zeroStock();
-      }
-      if(!i.depot)i.depot=zeroStock();
-      if(!i.retrait)i.retrait=zeroStock();
-    });
+    migrerDonnees();
     setSyncStatus('ok','Synchronisé · '+fmtTime(new Date()));
     document.getElementById('param-last-sync').textContent=fmtTime(new Date());
     renderAll();
   }catch(e){setSyncStatus('error','Erreur de connexion');}
+}
+
+function migrerDonnees(){
+  state.chantiers.forEach(ch=>{
+    CONTENANTS.forEach(ct=>{if(ch[ct.key]===undefined)ch[ct.key]=0;});
+    if(ch.cp!==undefined&&ch.codePostal===undefined){ch.codePostal=ch.cp;delete ch.cp;}
+    if(ch.prochaineCollecte===undefined)ch.prochaineCollecte=null;
+  });
+  state.interventions.forEach(i=>{
+    if(!i.stockApres){
+      const s={};CONTENANTS.forEach(ct=>{s[ct.key]=i[ct.key]||0;});
+      i.stockApres=s;
+      if(i.type==='depot'){i.depot=s;i.retrait=zeroStock();}
+      else if(i.type==='echange'){i.depot=zeroStock();i.retrait=zeroStock();}
+      else{i.retrait=s;i.depot=zeroStock();}
+      if(!i.stockAvant)i.stockAvant=zeroStock();
+    }
+    if(!i.depot)i.depot=zeroStock();
+    if(!i.retrait)i.retrait=zeroStock();
+  });
 }
 
 async function saveToCloud(){
@@ -706,6 +752,7 @@ function fmtDate(d){try{return new Date(d).toLocaleDateString('fr-FR',{day:'2-di
 function fmtDateLong(d){try{return new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});}catch(e){return d||'—';}}
 function fmtTime(d){return d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
 function daysSince(ds){if(!ds)return 0;return Math.floor((new Date()-new Date(ds))/(864e5));}
+function daysUntil(ds){if(!ds)return null;return Math.floor((new Date(ds)-new Date())/(864e5));}
 function getDelai(){return state.params?.delai||60;}
 function zeroStock(){const s={};CONTENANTS.forEach(c=>{s[c.key]=0;});return s;}
 function copyStock(ch){const s={};CONTENANTS.forEach(c=>{s[c.key]=ch[c.key]||0;});return s;}
@@ -716,16 +763,45 @@ function getChantierStatus(ch){
   if(ch.cloture)return 'cloture';
   if(!hasC)return 'vide';
   if(ch.alerte)return 'alerte';
+  if(ch.prochaineCollecte&&daysUntil(ch.prochaineCollecte)<=3&&daysUntil(ch.prochaineCollecte)>=0)return 'planifie';
   if(ch.lastInterventionDate&&daysSince(ch.lastInterventionDate)>getDelai())return 'vieilli';
   return 'ok';
 }
 
+// ─── RECALCUL STOCK ──────────────────────────────────────
+// Recalcule le stock d'un chantier à partir de toutes ses interventions triées par date
+function recalculerStockChantier(chantierId){
+  const ch=state.chantiers.find(x=>x.id===chantierId);if(!ch)return;
+  // Partir de zéro
+  const stock=zeroStock();
+  // Trier les interventions par date croissante
+  const intervs=[...state.interventions]
+    .filter(i=>i.chantierId===chantierId)
+    .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  let cloture=false;
+  intervs.forEach(i=>{
+    const dep=i.depot||{};const ret=i.retrait||{};
+    CONTENANTS.forEach(c=>{
+      stock[c.key]=Math.max(0,(stock[c.key]||0)+(dep[c.key]||0)-(ret[c.key]||0));
+    });
+    // Mettre à jour stockApres dans l'intervention
+    i.stockApres=copyStock({...ch,...stock});
+    // Vérifier clôture
+    if(i.type==='enlevement'&&totalStock(stock)===0)cloture=true;
+    else if(totalStock(stock)>0)cloture=false;
+  });
+  // Appliquer le stock final au chantier
+  CONTENANTS.forEach(c=>{ch[c.key]=stock[c.key];});
+  ch.cloture=cloture;
+  if(intervs.length>0)ch.lastInterventionDate=intervs[intervs.length-1].date;
+  else ch.lastInterventionDate=null;
+}
+
 // ─── STATS ───────────────────────────────────────────────
 function renderStats(){
-  let tot=0;
-  state.chantiers.forEach(ch=>{if(!ch.cloture)CONTENANTS.forEach(ct=>{tot+=ch[ct.key]||0;});});
+  let tot=0;state.chantiers.forEach(ch=>{if(!ch.cloture)CONTENANTS.forEach(ct=>{tot+=ch[ct.key]||0;});});
   const actifs=state.chantiers.filter(ch=>!ch.cloture).length;
-  const alertes=state.chantiers.filter(ch=>!ch.cloture&&(ch.alerte||getChantierStatus(ch)==='vieilli')).length;
+  const alertes=state.chantiers.filter(ch=>!ch.cloture&&(ch.alerte||['vieilli','alerte'].includes(getChantierStatus(ch)))).length;
   document.getElementById('s-total').textContent=tot;
   document.getElementById('s-chantiers').textContent=actifs;
   document.getElementById('s-clients').textContent=state.clients.length;
@@ -741,7 +817,96 @@ function updateSub(){
   document.getElementById('header-sub').textContent=state.clients.length+' client'+(state.clients.length>1?'s':'')+' · '+a+' chantier'+(a>1?'s':'');
 }
 
-function renderAll(){renderStats();updateSub();if(currentTab==='clients'){if(currentClientId)renderChantiers();else renderClients();}if(currentTab==='historique')renderHistorique();if(currentTab==='params')document.getElementById('p-delai').value=getDelai();}
+function renderAll(){
+  renderStats();updateSub();
+  if(currentTab==='dashboard')renderDashboard();
+  if(currentTab==='clients'){if(currentClientId)renderChantiers();else renderClients();}
+  if(currentTab==='historique')renderHistorique();
+  if(currentTab==='params')document.getElementById('p-delai').value=getDelai();
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────
+function renderDashboard(){
+  const el=document.getElementById('dashboard-content');
+  const alertes=state.chantiers.filter(ch=>ch.alerte&&!ch.cloture);
+  const vieillis=state.chantiers.filter(ch=>getChantierStatus(ch)==='vieilli');
+  const planifies=state.chantiers.filter(ch=>ch.prochaineCollecte&&!ch.cloture).sort((a,b)=>String(a.prochaineCollecte).localeCompare(String(b.prochaineCollecte)));
+  let html='';
+
+  // Alertes à collecter
+  if(alertes.length){
+    html+=`<div class="dashboard-section"><div class="dashboard-title"><i class="ti ti-bell-ringing" style="color:var(--red)"></i> À collecter (${alertes.length})</div><div class="alert-card">`;
+    html+=alertes.map(ch=>{
+      const client=state.clients.find(c=>c.id===ch.clientId);
+      const tot=totalStock(ch);
+      return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})">
+        <div class="alert-dot rouge"></div>
+        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${ch.ville||''}</div></div>
+        <div class="alert-right" style="color:var(--red)">${tot} cont.</div>
+      </div>`;
+    }).join('');
+    html+='</div></div>';
+  }
+
+  // En retard
+  if(vieillis.length){
+    html+=`<div class="dashboard-section"><div class="dashboard-title"><i class="ti ti-clock" style="color:var(--amber)"></i> En retard — +${getDelai()}j (${vieillis.length})</div><div class="alert-card">`;
+    html+=vieillis.map(ch=>{
+      const client=state.clients.find(c=>c.id===ch.clientId);
+      const jours=daysSince(ch.lastInterventionDate);
+      return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})">
+        <div class="alert-dot amber"></div>
+        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${ch.ville||''}</div></div>
+        <div class="alert-right" style="color:var(--amber)">${jours}j</div>
+      </div>`;
+    }).join('');
+    html+='</div></div>';
+  }
+
+  // Planifiés
+  if(planifies.length){
+    html+=`<div class="dashboard-section"><div class="dashboard-title"><i class="ti ti-calendar" style="color:var(--purple)"></i> Collectes planifiées (${planifies.length})</div><div class="alert-card">`;
+    html+=planifies.map(ch=>{
+      const client=state.clients.find(c=>c.id===ch.clientId);
+      const j=daysUntil(ch.prochaineCollecte);
+      const label=j===0?'Aujourd\'hui':j===1?'Demain':j<0?`${Math.abs(j)}j de retard`:`Dans ${j}j`;
+      const color=j<0?'var(--red)':j<=3?'var(--orange)':'var(--purple)';
+      return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})">
+        <div class="alert-dot purple"></div>
+        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${fmtDate(ch.prochaineCollecte)}</div></div>
+        <div class="alert-right" style="color:${color}">${label}</div>
+      </div>`;
+    }).join('');
+    html+='</div></div>';
+  }
+
+  // Tous les chantiers actifs
+  const actifs=state.chantiers.filter(ch=>!ch.cloture&&totalStock(ch)>0);
+  if(actifs.length){
+    html+=`<div class="dashboard-section"><div class="dashboard-title"><i class="ti ti-map-2" style="color:var(--blue)"></i> Parc contenants (${actifs.length} chantiers)</div><div class="alert-card">`;
+    html+=actifs.map(ch=>{
+      const client=state.clients.find(c=>c.id===ch.clientId);
+      const tags=CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>`${ch[ct.key]} ${ct.label}`).join(', ');
+      return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})">
+        <div class="alert-dot" style="background:var(--blue)"></div>
+        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${tags}</div></div>
+        <div class="alert-right" style="color:var(--blue)">${totalStock(ch)}</div>
+      </div>`;
+    }).join('');
+    html+='</div></div>';
+  }
+
+  if(!alertes.length&&!vieillis.length&&!planifies.length&&!actifs.length){
+    html='<div class="empty-state"><i class="ti ti-layout-dashboard"></i><p>Aucune alerte. Tout est en ordre !</p></div>';
+  }
+  el.innerHTML=html;
+}
+
+function goToChantierDirect(chantierId){
+  const ch=state.chantiers.find(x=>x.id===chantierId);if(!ch)return;
+  switchTab('clients',document.querySelectorAll('.tab')[1]);
+  goToChantiers(ch.clientId);
+}
 
 // ─── NAVIGATION ──────────────────────────────────────────
 function goToClients(){
@@ -760,7 +925,8 @@ function goToChantiers(clientId){
   document.getElementById('view-chantiers').style.display='block';
   const bc=document.getElementById('breadcrumb');
   bc.style.display='flex';
-  bc.innerHTML=`<span class="breadcrumb-item" onclick="goToClients()">Clients</span><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">${client?client.nom:'?'}</span>`;
+  bc.innerHTML=`<span class="breadcrumb-item" onclick="goToClients()">Clients</span><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">${client?client.nom:'?'}</span>
+    <button onclick="ouvrirRapport(${clientId})" style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid var(--purple-border);border-radius:20px;background:var(--purple-light);color:var(--purple-text);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit"><i class="ti ti-file-analytics" style="font-size:12px"></i> Rapport</button>`;
   document.getElementById('btn-add-label').textContent='Chantier';
   renderChantiers();
 }
@@ -771,6 +937,7 @@ function switchTab(tab,btn){
   if(btn)btn.classList.add('active');
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='dashboard')renderDashboard();
   if(tab==='historique')renderHistorique();
   if(tab==='params')document.getElementById('p-delai').value=getDelai();
   if(tab==='clients'){if(currentClientId)renderChantiers();else renderClients();}
@@ -789,11 +956,13 @@ function renderClients(){
     const actifs=state.chantiers.filter(ch=>ch.clientId===c.id&&!ch.cloture);
     const nbAlertes=actifs.filter(ch=>ch.alerte).length;
     const nbVieillis=actifs.filter(ch=>getChantierStatus(ch)==='vieilli').length;
+    const nbPlanifies=actifs.filter(ch=>ch.prochaineCollecte).length;
     let totalC=0;actifs.forEach(ch=>CONTENANTS.forEach(ct=>{totalC+=ch[ct.key]||0;}));
     const tags=[];
     if(totalC>0)tags.push(`<span class="client-stat-tag contenants"><i class="ti ti-package" style="font-size:11px"></i> ${totalC} contenant${totalC>1?'s':''}</span>`);
     if(nbAlertes>0)tags.push(`<span class="client-stat-tag alerte"><i class="ti ti-bell-ringing" style="font-size:11px"></i> ${nbAlertes} à collecter</span>`);
     if(nbVieillis>0)tags.push(`<span class="client-stat-tag vieilli"><i class="ti ti-clock" style="font-size:11px"></i> ${nbVieillis} en retard</span>`);
+    if(nbPlanifies>0)tags.push(`<span class="client-stat-tag planifie"><i class="ti ti-calendar" style="font-size:11px"></i> ${nbPlanifies} planifié${nbPlanifies>1?'s':''}</span>`);
     return `<div class="client-card" onclick="goToChantiers(${c.id})">
       <div class="client-card-top">
         <div><div class="client-nom">${c.nom}</div><div class="client-meta">${c.ville||'—'}${c.contact?' · '+c.contact:''}</div></div>
@@ -803,8 +972,9 @@ function renderClients(){
         </div>
       </div>
       ${tags.length?`<div class="client-stats">${tags.join('')}</div>`:''}
-      <div style="border-top:1px solid var(--gray-100);display:grid;grid-template-columns:1fr 1fr" onclick="event.stopPropagation()">
-        <button class="chantier-btn" onclick="event.stopPropagation();openEditClient(${c.id})" style="color:var(--blue);border-right:1px solid var(--gray-100)"><i class="ti ti-pencil"></i><span>Modifier</span></button>
+      <div style="border-top:1px solid var(--gray-100);display:grid;grid-template-columns:1fr 1fr 1fr" onclick="event.stopPropagation()">
+        <button class="chantier-btn purple" onclick="event.stopPropagation();ouvrirRapport(${c.id})"><i class="ti ti-file-analytics"></i><span>Rapport</span></button>
+        <button class="chantier-btn" onclick="event.stopPropagation();openEditClient(${c.id})" style="color:var(--blue)"><i class="ti ti-pencil"></i><span>Modifier</span></button>
         <button class="chantier-btn red" onclick="event.stopPropagation();deleteClient(${c.id})"><i class="ti ti-trash"></i><span>Supprimer</span></button>
       </div>
     </div>`;
@@ -819,9 +989,10 @@ function renderChantiers(){
     if(ch.clientId!==currentClientId)return false;
     const mq=!q||(ch.nom||'').toLowerCase().includes(q)||(ch.rue||'').toLowerCase().includes(q)||(ch.ville||'').toLowerCase().includes(q);
     const s=getChantierStatus(ch);
-    return mq&&(f==='tous'||s===f||(f==='actif'&&['ok','alerte','vide'].includes(s)));
+    const ok=f==='tous'||s===f||(f==='actif'&&['ok','alerte','vide'].includes(s));
+    return mq&&ok;
   });
-  list.sort((a,b)=>{const o={alerte:0,vieilli:1,ok:2,vide:3,cloture:4};return o[getChantierStatus(a)]-o[getChantierStatus(b)];});
+  list.sort((a,b)=>{const o={alerte:0,vieilli:1,planifie:2,ok:3,vide:4,cloture:5};return o[getChantierStatus(a)]-o[getChantierStatus(b)];});
   const el=document.getElementById('chantiers-list');
   if(!list.length){
     const client=state.clients.find(c=>c.id===currentClientId);
@@ -832,7 +1003,7 @@ function renderChantiers(){
   let html=nbAl>0?`<div class="alerte-banner"><i class="ti ti-alert-triangle"></i> ${nbAl} chantier${nbAl>1?'s':''} à collecter</div>`:'';
   html+=list.map(ch=>{
     const s=getChantierStatus(ch);
-    const bt={alerte:'⚠ À collecter',vieilli:'⏰ En retard',ok:'✓ En place',cloture:'Clôturé',vide:'Vide'}[s]||s;
+    const bt={alerte:'⚠ À collecter',vieilli:'⏰ En retard',ok:'✓ En place',cloture:'Clôturé',vide:'Vide',planifie:'📅 Planifié'}[s]||s;
     const tags=CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>`<span class="tag ${ct.cls}">${ct.emoji} ${ch[ct.key]} ${ct.label}</span>`).join('');
     const noTag=!tags&&s!=='cloture'?`<span class="tag none">Aucun contenant</span>`:'';
     const adresse=[ch.rue,[ch.codePostal,ch.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
@@ -840,9 +1011,11 @@ function renderChantiers(){
     const days=daysSince(ch.lastInterventionDate);
     const daysTag=ch.lastInterventionDate&&s!=='cloture'&&s!=='vide'?`<span class="vieill-days"><i class="ti ti-clock" style="font-size:10px"></i> ${days}j</span>`:'';
     const bsdBadge=ch.lastBsdNum?`<div class="chantier-bsd"><div class="bsd-badge"><i class="ti ti-clipboard-list" style="font-size:12px"></i> ${ch.lastBsdType||'BSD'} — ${ch.lastBsdNum}</div></div>`:'';
+    const planifBadge=ch.prochaineCollecte&&!ch.cloture?`<div class="planif-badge"><i class="ti ti-calendar" style="font-size:11px"></i> Collecte prévue : ${fmtDate(ch.prochaineCollecte)}</div>`:'';
     const contactLine=ch.contactNom?`<div class="chantier-contact"><i class="ti ti-user" style="font-size:13px"></i> ${ch.contactNom}${ch.contactRole?' · '+ch.contactRole:''}${ch.contactTel?` · <a href="tel:${ch.contactTel.replace(/\s/g,'')}" style="color:var(--blue);text-decoration:none">${ch.contactTel}</a>`:''}</div>`:'';
     const pleinBtn=s!=='vide'&&s!=='cloture'?`<button class="chantier-btn ${ch.alerte?'green':'amber'}" onclick="toggleAlerte(${ch.id})"><i class="ti ti-${ch.alerte?'check':'bell-ringing'}"></i><span>${ch.alerte?'Normal':'Plein'}</span></button>`:'<div></div>';
-    return `<div class="chantier-card ${s==='alerte'?'alerte':s==='vieilli'?'vieilli':''}">
+    const reouvBtn=s==='cloture'?`<button class="chantier-btn green" onclick="reouvrir(${ch.id})"><i class="ti ti-rotate-clockwise"></i><span>Rouvrir</span></button>`:'';
+    return `<div class="chantier-card ${s==='alerte'?'alerte':s==='vieilli'?'vieilli':s==='cloture'?'cloture':''}">
       <div class="chantier-top">
         <div style="flex:1;min-width:0">
           <div class="chantier-nom">${ch.nom} ${daysTag}</div>
@@ -850,16 +1023,18 @@ function renderChantiers(){
         </div>
         <span class="badge ${s}">${bt}</span>
       </div>
-      ${contactLine}${bsdBadge}
+      ${contactLine}${bsdBadge}${planifBadge}
       <div class="contenants-row">${tags}${noTag}</div>
-      <div class="chantier-actions">
+      ${s!=='cloture'?`<div class="chantier-actions">
         <button class="chantier-btn green" onclick="openIntervention(${ch.id},'depot')"><i class="ti ti-package"></i><span>Dépôt</span></button>
         <button class="chantier-btn blue" onclick="openIntervention(${ch.id},'echange')"><i class="ti ti-arrows-exchange"></i><span>Échange</span></button>
         <button class="chantier-btn orange" onclick="openIntervention(${ch.id},'enlevement')"><i class="ti ti-truck-loading"></i><span>Enlèvement</span></button>
         <button class="chantier-btn teal" onclick="openLastBon(${ch.id})"><i class="ti ti-file-invoice"></i><span>Bon PDF</span></button>
-      </div>
-      <div class="chantier-actions" style="border-top:1px solid var(--gray-100);grid-template-columns:1fr 1fr 1fr">
-        ${pleinBtn}
+      </div>`:''}
+      <div class="chantier-actions" style="border-top:1px solid var(--gray-100);grid-template-columns:${s==='cloture'?'1fr 1fr':'1fr 1fr 1fr 1fr'}">
+        ${s!=='cloture'?pleinBtn:''}
+        ${s!=='cloture'?`<button class="chantier-btn amber" onclick="ouvrirStockManuel(${ch.id})"><i class="ti ti-adjustments"></i><span>Stock</span></button>`:''}
+        ${reouvBtn}
         <button class="chantier-btn" onclick="editChantier(${ch.id})" style="color:var(--gray-400)"><i class="ti ti-pencil"></i><span>Modifier</span></button>
         <button class="chantier-btn red" onclick="deleteChantier(${ch.id})"><i class="ti ti-trash"></i><span>Supprimer</span></button>
       </div>
@@ -871,7 +1046,12 @@ function renderChantiers(){
 // ─── HISTORIQUE ──────────────────────────────────────────
 function renderHistorique(){
   const q=(document.getElementById('search-histo').value||'').toLowerCase();
-  let list=[...state.interventions].filter(h=>!q||[h.clientNom,h.chantierNom,h.bsdNum].some(v=>(v||'').toLowerCase().includes(q)));
+  const f=document.getElementById('filter-histo').value;
+  let list=[...state.interventions].filter(h=>{
+    const mq=!q||[h.clientNom,h.chantierNom,h.bsdNum].some(v=>(v||'').toLowerCase().includes(q));
+    const mf=f==='tous'||h.type===f;
+    return mq&&mf;
+  });
   list.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   const el=document.getElementById('historique-list');
   if(!list.length){el.innerHTML='<div class="empty-state"><i class="ti ti-history"></i><p>Aucune intervention enregistrée.</p></div>';return;}
@@ -906,15 +1086,14 @@ function buildHistoLines(h){
     lines.push('Échange plein ↔ vide');
     if(depParts.length)lines.push('+ Déposé : '+depParts.join(', '));
     if(retParts.length)lines.push('+ Retiré : '+retParts.join(', '));
-  } else if(h.type==='enlevement'){
+  } else{
     if(retParts.length)lines.push('Retiré : '+retParts.join(', '));
     if(depParts.length)lines.push('+ Déposé : '+depParts.join(', '));
   }
-  // Stock après
   if(h.stockApres&&totalStock(h.stockApres)>0){
     const sp=CONTENANTS.filter(c=>h.stockApres[c.key]>0).map(c=>`${h.stockApres[c.key]} ${c.label}`);
     if(sp.length)lines.push('→ Stock : '+sp.join(', '));
-  } else if(h.type==='enlevement'||(h.stockApres&&totalStock(h.stockApres)===0)){
+  } else if(totalStock(h.stockApres||{})=== 0&&h.type==='enlevement'){
     lines.push('→ Chantier clôturé');
   }
   if(h.note)lines.push(h.note);
@@ -933,16 +1112,12 @@ function showDetail(hId){
   const depItems=CONTENANTS.filter(c=>dep[c.key]>0).map(c=>`<div class="recap-row"><span>${c.emoji} ${c.label}</span><span style="font-weight:700;color:var(--green-text)">+${dep[c.key]}</span></div>`);
   const retItems=CONTENANTS.filter(c=>ret[c.key]>0).map(c=>`<div class="recap-row"><span>${c.emoji} ${c.label}</span><span style="font-weight:700;color:var(--red)">-${ret[c.key]}</span></div>`);
   const stockItems=h.stockApres?CONTENANTS.filter(c=>h.stockApres[c.key]>0).map(c=>`<div class="recap-row"><span>${c.emoji} ${c.label}</span><span style="font-weight:700">${h.stockApres[c.key]}</span></div>`):[];
-
   let actionHtml='';
-  if(h.type==='echange'){
-    actionHtml+=`<div class="recap-bloc blue"><div class="recap-bloc-title">Échange — plein ↔ vide</div></div>`;
-  }
+  if(h.type==='echange')actionHtml+=`<div class="recap-bloc blue"><div class="recap-bloc-title">Échange — plein ↔ vide</div></div>`;
   if(depItems.length)actionHtml+=`<div class="recap-bloc green"><div class="recap-bloc-title">Contenants déposés</div>${depItems.join('')}</div>`;
   if(retItems.length)actionHtml+=`<div class="recap-bloc orange"><div class="recap-bloc-title">Contenants retirés</div>${retItems.join('')}</div>`;
-  if(stockItems.length)actionHtml+=`<div class="detail-section"><div class="detail-section-title"><i class="ti ti-package" style="color:var(--green)"></i> Stock final sur site</div>${stockItems.join('')}</div>`;
-  else if(h.stockApres&&totalStock(h.stockApres)===0)actionHtml+=`<div style="font-size:13px;color:var(--gray-400);margin-bottom:14px">→ Chantier clôturé — aucun contenant sur site</div>`;
-
+  if(stockItems.length)actionHtml+=`<div class="recap-bloc gray"><div class="recap-bloc-title">Stock final sur site</div>${stockItems.join('')}</div>`;
+  else if(h.stockApres&&totalStock(h.stockApres)===0)actionHtml+=`<div style="font-size:13px;color:var(--gray-400);margin-bottom:14px">→ Chantier clôturé</div>`;
   const bsdHtml=h.bsdNum?`<div class="detail-section"><div class="detail-section-title"><i class="ti ti-clipboard-list" style="color:var(--teal)"></i> Bordereau</div><div class="bsd-detail-block"><div class="bsd-detail-num">${h.bsdNum}</div><div class="bsd-detail-type"><i class="ti ti-certificate"></i> ${h.bsdType||'BSD'}</div>${h.bsdDechet?`<div style="font-size:12px;color:var(--teal-text);margin-top:8px">${h.bsdDechet}</div>`:''}</div></div>`:'';
   const chHtml=ch?`<div class="detail-section"><div class="detail-section-title"><i class="ti ti-map-2" style="color:var(--purple)"></i> Chantier</div>
     <div class="detail-row"><span class="detail-lbl">Chantier</span><span class="detail-val">${ch.nom}</span></div>
@@ -952,7 +1127,6 @@ function showDetail(hId){
     ${ch.contactTel?`<div class="detail-row"><span class="detail-lbl">Tél.</span><span class="detail-val"><a href="tel:${ch.contactTel.replace(/\s/g,'')}" class="phone-link">${ch.contactTel}</a></span></div>`:''}
   </div>`:'';
   const sigHtml=h.signature?`<div class="detail-section"><div class="detail-section-title"><i class="ti ti-signature"></i> Signature</div><img src="${h.signature}" style="max-width:100%;border:1px solid var(--border);border-radius:var(--radius-sm)"></div>`:'';
-
   document.getElementById('detail-title').textContent=TYPE_LABELS[h.type]||h.type;
   document.getElementById('detail-content').innerHTML=`${photoHtml}
     <div class="detail-section">
@@ -963,6 +1137,128 @@ function showDetail(hId){
     </div>
     ${actionHtml}${bsdHtml}${chHtml}${sigHtml}`;
   document.getElementById('modal-detail').classList.add('open');
+}
+
+// ─── EDIT INTERVENTION ───────────────────────────────────
+function openEditInterv(hId){
+  const h=state.interventions.find(x=>x.id===hId);if(!h)return;
+  editingIntervId=hId;
+  document.getElementById('edit-interv-sub').textContent=`${h.clientNom} — ${h.chantierNom} — ${TYPE_LABELS[h.type]||h.type}`;
+  document.getElementById('ei-date').value=h.date||today();
+  document.getElementById('ei-note').value=h.note||'';
+  document.getElementById('ei-bsd-num').value=h.bsdNum||'';
+  document.getElementById('ei-bsd-dechet').value=h.bsdDechet||'';
+  document.getElementById('ei-depot-grid').innerHTML=buildGrid('eid',h.depot||{});
+  document.getElementById('ei-retrait-grid').innerHTML=buildGrid('eir',h.retrait||{});
+  closeModal('modal-detail');
+  document.getElementById('modal-edit-interv').classList.add('open');
+}
+
+async function saveEditInterv(){
+  const h=state.interventions.find(x=>x.id===editingIntervId);if(!h)return;
+  h.date=document.getElementById('ei-date').value||today();
+  h.note=document.getElementById('ei-note').value.trim();
+  h.bsdNum=document.getElementById('ei-bsd-num').value.trim().toUpperCase();
+  h.bsdDechet=document.getElementById('ei-bsd-dechet').value.trim();
+  h.depot=readGrid('eid');
+  h.retrait=readGrid('eir');
+  // Recalculer le stock du chantier
+  recalculerStockChantier(h.chantierId);
+  closeModal('modal-edit-interv');
+  renderAll();
+  await saveToCloud();
+  showToast('✓ Intervention modifiée — stock recalculé');
+}
+
+// ─── STOCK MANUEL ────────────────────────────────────────
+function ouvrirStockManuel(chantierId){
+  stockManuelChantierId=chantierId;
+  const ch=state.chantiers.find(x=>x.id===chantierId);if(!ch)return;
+  document.getElementById('stock-modal-sub').textContent=ch.nom;
+  document.getElementById('stock-grid').innerHTML=buildGrid('sm',copyStock(ch));
+  document.getElementById('modal-stock').classList.add('open');
+}
+
+async function saveStockManuel(){
+  const ch=state.chantiers.find(x=>x.id===stockManuelChantierId);if(!ch)return;
+  const newStock=readGrid('sm');
+  CONTENANTS.forEach(c=>{ch[c.key]=newStock[c.key];});
+  if(totalStock(newStock)>0)ch.cloture=false;
+  closeModal('modal-stock');
+  renderAll();
+  await saveToCloud();
+  showToast('✓ Stock corrigé');
+}
+
+// ─── ROUVRIR CHANTIER ────────────────────────────────────
+async function reouvrir(chantierId){
+  const ch=state.chantiers.find(x=>x.id===chantierId);if(!ch)return;
+  ch.cloture=false;ch.alerte=false;
+  renderAll();
+  await saveToCloud();
+  showToast('✓ Chantier réouvert');
+}
+
+// ─── RAPPORT CLIENT ──────────────────────────────────────
+function ouvrirRapport(clientId){
+  rapportClientId=clientId;
+  const client=state.clients.find(c=>c.id===clientId);
+  document.getElementById('rapport-sub').textContent=client?client.nom:'Client';
+  const now=new Date();
+  const debut=new Date(now.getFullYear(),now.getMonth()-1,1).toISOString().split('T')[0];
+  const fin=today();
+  document.getElementById('r-debut').value=debut;
+  document.getElementById('r-fin').value=fin;
+  document.getElementById('rapport-content').innerHTML='';
+  document.getElementById('modal-rapport').classList.add('open');
+}
+
+function genererRapport(){
+  const debut=document.getElementById('r-debut').value;
+  const fin=document.getElementById('r-fin').value;
+  const client=state.clients.find(c=>c.id===rapportClientId);
+  const chantiers=state.chantiers.filter(ch=>ch.clientId===rapportClientId);
+  const intervs=state.interventions.filter(i=>i.clientId===rapportClientId&&i.date>=debut&&i.date<=fin);
+  intervs.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+
+  let html=`<div style="background:var(--green);color:#fff;padding:14px;border-radius:var(--radius) var(--radius) 0 0">
+    <div style="font-size:16px;font-weight:700">${client?client.nom:'Client'}</div>
+    <div style="font-size:12px;opacity:.8;margin-top:2px">Rapport du ${fmtDate(debut)} au ${fmtDate(fin)}</div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:14px;margin-bottom:12px">`;
+
+  // Stock actuel par chantier
+  html+=`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:8px">Stock actuel</div>`;
+  chantiers.forEach(ch=>{
+    const tot=totalStock(ch);
+    if(tot>0||!ch.cloture){
+      const tags=CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>`${ch[ct.key]} ${ct.label}`).join(', ');
+      html+=`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray-100);font-size:13px">
+        <span style="font-weight:600">${ch.nom}</span>
+        <span style="color:var(--gray-600)">${tags||'Vide'}</span>
+      </div>`;
+    }
+  });
+
+  // Interventions sur la période
+  if(intervs.length){
+    html+=`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin:14px 0 8px">${intervs.length} Intervention${intervs.length>1?'s':''}</div>`;
+    intervs.forEach(h=>{
+      const lines=buildHistoLines(h);
+      html+=`<div style="padding:8px 0;border-bottom:1px solid var(--gray-100)">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600">
+          <span>${h.chantierNom}</span><span style="color:var(--gray-400)">${fmtDate(h.date)}</span>
+        </div>
+        <div style="font-size:12px;color:var(--gray-600);margin-top:3px">${lines.join(' · ')}</div>
+        ${h.bsdNum?`<div style="font-size:11px;color:var(--teal-text);margin-top:2px">${h.bsdType||'BSD'} ${h.bsdNum}</div>`:''}
+      </div>`;
+    });
+  } else {
+    html+=`<div style="font-size:13px;color:var(--gray-400);margin-top:10px;text-align:center">Aucune intervention sur cette période</div>`;
+  }
+  html+='</div>';
+  html+=`<button class="btn-submit no-print" onclick="window.print()" style="background:var(--purple)"><i class="ti ti-printer"></i> Imprimer / PDF</button>`;
+  document.getElementById('rapport-content').innerHTML=html;
 }
 
 // ─── INTERVENTION ────────────────────────────────────────
@@ -998,66 +1294,39 @@ function readGrid(id){
 }
 
 function selectOpType(type){
-  currentOpType=type;
-  showAjoutSupp=false;showRetraitSupp=false;
+  currentOpType=type;showAjoutSupp=false;showRetraitSupp=false;
   const ch=state.chantiers.find(x=>x.id===currentChantierId);
-
-  ['depot','echange','enlevement'].forEach(t=>{
-    document.getElementById('op-'+t).className='op-type-btn '+t+(type===t?' selected':'');
-  });
-
-  // Stock actuel
+  ['depot','echange','enlevement'].forEach(t=>{document.getElementById('op-'+t).className='op-type-btn '+t+(type===t?' selected':'');});
   const stockItems=ch?CONTENANTS.filter(c=>ch[c.key]>0).map(c=>`<span class="stock-chip">${c.emoji} ${ch[c.key]} ${c.label}</span>`).join(''):'';
   const stockZone=document.getElementById('i-stock-actuel');
-  document.getElementById('i-stock-actuel-items').innerHTML=stockItems||'<span style="font-size:12px;color:var(--gray-400)">Aucun contenant sur ce chantier</span>';
+  document.getElementById('i-stock-actuel-items').innerHTML=stockItems||'<span style="font-size:12px;color:var(--gray-400)">Aucun contenant</span>';
   stockZone.style.display=ch&&(CONTENANTS.some(c=>ch[c.key]>0)||type!=='depot')?'block':'none';
-
-  // Zones
   document.getElementById('zone-depot').style.display=type==='depot'?'block':'none';
   document.getElementById('zone-echange').style.display=type==='echange'?'block':'none';
   document.getElementById('zone-enlevement').style.display=type==='enlevement'?'block':'none';
   document.getElementById('zone-ajout-supp').style.display='none';
   document.getElementById('zone-retrait-supp').style.display='none';
   document.getElementById('i-preview-stock').style.display='none';
-
-  // Bouton submit
   const btn=document.getElementById('i-submit-btn');
   btn.className='btn-submit'+(type==='enlevement'?' orange':type==='echange'?' blue':'');
   btn.innerHTML={depot:'<i class="ti ti-check"></i> Enregistrer le dépôt',echange:'<i class="ti ti-check"></i> Confirmer l\'échange',enlevement:'<i class="ti ti-check"></i> Confirmer l\'enlèvement'}[type];
-
-  // Construire les grilles
-  if(type==='depot'){
-    document.getElementById('i-depot-grid').innerHTML=buildGrid('dep',null).replace('<div class="contenants-grid">','').replace(/<\/div>$/,'');
-    document.getElementById('i-depot-grid').innerHTML=buildGrid('dep',null);
-  } else if(type==='enlevement'){
-    // Pré-remplir avec le stock actuel
-    document.getElementById('i-enlevement-grid').innerHTML=buildGrid('enl',ch?copyStock(ch):null);
-    document.getElementById('i-cloture-info').style.display='block';
-  }
-
-  // Grilles supplémentaires (masquées mais pré-construites)
+  if(type==='depot'){document.getElementById('i-depot-grid').innerHTML=buildGrid('dep',null);}
+  else if(type==='enlevement'){document.getElementById('i-enlevement-grid').innerHTML=buildGrid('enl',ch?copyStock(ch):null);}
   document.getElementById('i-ajout-grid').innerHTML=buildGrid('ajout',null);
   document.getElementById('i-retrait-grid').innerHTML=buildGrid('retrait',null);
-
-  // Boutons toggle
-  rebuildToggleBtns();
-  updatePreview();
+  rebuildToggleBtns();updatePreview();
 }
 
 function rebuildToggleBtns(){
   const zone=document.getElementById('zone-toggle-btns');
   const btns=[];
-  if(currentOpType==='depot'||currentOpType==='enlevement'){
-    if(!showRetraitSupp&&currentOpType==='depot')
-      btns.push(`<button onclick="toggleZone('retrait')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px dashed var(--red);border-radius:var(--radius-sm);background:none;color:var(--red);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit"><i class="ti ti-circle-minus"></i> Retirer des contenants aussi</button>`);
-    if(!showAjoutSupp&&currentOpType==='enlevement')
-      btns.push(`<button onclick="toggleZone('ajout')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px dashed var(--green);border-radius:var(--radius-sm);background:none;color:var(--green-text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit"><i class="ti ti-circle-plus"></i> Déposer des contenants aussi</button>`);
-  }
+  if(currentOpType==='depot'&&!showRetraitSupp)
+    btns.push(`<button class="btn-small-toggle red" onclick="toggleZone('retrait')"><i class="ti ti-circle-minus"></i> Retirer aussi</button>`);
+  if(currentOpType==='enlevement'&&!showAjoutSupp)
+    btns.push(`<button class="btn-small-toggle green" onclick="toggleZone('ajout')"><i class="ti ti-circle-plus"></i> Déposer aussi</button>`);
   if(currentOpType==='echange'){
-    if(!showAjoutSupp)
-      btns.push(`<button onclick="toggleZone('ajout')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px dashed var(--green);border-radius:var(--radius-sm);background:none;color:var(--green-text);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit"><i class="ti ti-circle-plus"></i> Déposer en plus</button>`);
-    if(!showRetraitSupp)
-      btns.push(`<button onclick="toggleZone('retrait')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px dashed var(--red);border-radius:var(--radius-sm);background:none;color:var(--red);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit"><i class="ti ti-circle-minus"></i> Retirer en plus</button>`);
+    if(!showAjoutSupp)btns.push(`<button class="btn-small-toggle green" onclick="toggleZone('ajout')"><i class="ti ti-circle-plus"></i> Déposer en plus</button>`);
+    if(!showRetraitSupp)btns.push(`<button class="btn-small-toggle red" onclick="toggleZone('retrait')"><i class="ti ti-circle-minus"></i> Retirer en plus</button>`);
   }
   zone.innerHTML=btns.join('');
 }
@@ -1065,19 +1334,14 @@ function rebuildToggleBtns(){
 function toggleZone(which){
   if(which==='ajout'){showAjoutSupp=true;document.getElementById('zone-ajout-supp').style.display='block';}
   else{showRetraitSupp=true;document.getElementById('zone-retrait-supp').style.display='block';}
-  rebuildToggleBtns();
-  updatePreview();
+  rebuildToggleBtns();updatePreview();
 }
 
 function updatePreview(){
-  const ch=state.chantiers.find(x=>x.id===currentChantierId);
-  if(!ch)return;
+  const ch=state.chantiers.find(x=>x.id===currentChantierId);if(!ch)return;
   const {depot,retrait}=computeDepotRetrait();
-  // Calculer stock après
   const stockApres={};
-  CONTENANTS.forEach(c=>{
-    stockApres[c.key]=Math.max(0,(ch[c.key]||0)+(depot[c.key]||0)-(retrait[c.key]||0));
-  });
+  CONTENANTS.forEach(c=>{stockApres[c.key]=Math.max(0,(ch[c.key]||0)+(depot[c.key]||0)-(retrait[c.key]||0));});
   const preview=document.getElementById('i-preview-stock');
   const items=document.getElementById('i-preview-items');
   const hasChange=CONTENANTS.some(c=>(depot[c.key]||0)>0||(retrait[c.key]||0)>0);
@@ -1087,25 +1351,24 @@ function updatePreview(){
     const d=depot[c.key]||0,r=retrait[c.key]||0,cur=ch[c.key]||0,fin=stockApres[c.key];
     if(d===0&&r===0&&cur===0)return '';
     let cls='unchanged',label=`${c.emoji} ${c.label} : ${fin}`;
-    if(d>0&&r===0){cls='added';label=`${c.emoji} ${c.label} : ${cur} +${d} = ${fin}`;}
-    else if(r>0&&d===0){cls='removed';label=`${c.emoji} ${c.label} : ${cur} -${r} = ${fin}`;}
-    else if(d>0&&r>0){cls='added';label=`${c.emoji} ${c.label} : ${cur} +${d}-${r} = ${fin}`;}
+    if(d>0&&r===0){cls='added';label=`${c.emoji} ${c.label} : ${cur}+${d}=${fin}`;}
+    else if(r>0&&d===0){cls='removed';label=`${c.emoji} ${c.label} : ${cur}-${r}=${fin}`;}
+    else if(d>0&&r>0){cls='added';label=`${c.emoji} ${c.label} : ${cur}+${d}-${r}=${fin}`;}
     return fin>0||d>0||r>0?`<span class="preview-chip ${cls}">${label}</span>`:'';
   }).join('');
 }
 
 function computeDepotRetrait(){
-  const depot=zeroStock();
-  const retrait=zeroStock();
+  const depot=zeroStock(),retrait=zeroStock();
   if(currentOpType==='depot'){
-    const d=readGrid('dep');CONTENANTS.forEach(c=>{depot[c.key]=(depot[c.key]||0)+(d[c.key]||0);});
-    if(showRetraitSupp){const r=readGrid('retrait');CONTENANTS.forEach(c=>{retrait[c.key]=(retrait[c.key]||0)+(r[c.key]||0);});}
+    const d=readGrid('dep');CONTENANTS.forEach(c=>{depot[c.key]+=d[c.key]||0;});
+    if(showRetraitSupp){const r=readGrid('retrait');CONTENANTS.forEach(c=>{retrait[c.key]+=r[c.key]||0;});}
   } else if(currentOpType==='echange'){
-    if(showAjoutSupp){const d=readGrid('ajout');CONTENANTS.forEach(c=>{depot[c.key]=(depot[c.key]||0)+(d[c.key]||0);});}
-    if(showRetraitSupp){const r=readGrid('retrait');CONTENANTS.forEach(c=>{retrait[c.key]=(retrait[c.key]||0)+(r[c.key]||0);});}
-  } else if(currentOpType==='enlevement'){
-    const r=readGrid('enl');CONTENANTS.forEach(c=>{retrait[c.key]=(retrait[c.key]||0)+(r[c.key]||0);});
-    if(showAjoutSupp){const d=readGrid('ajout');CONTENANTS.forEach(c=>{depot[c.key]=(depot[c.key]||0)+(d[c.key]||0);});}
+    if(showAjoutSupp){const d=readGrid('ajout');CONTENANTS.forEach(c=>{depot[c.key]+=d[c.key]||0;});}
+    if(showRetraitSupp){const r=readGrid('retrait');CONTENANTS.forEach(c=>{retrait[c.key]+=r[c.key]||0;});}
+  } else{
+    const r=readGrid('enl');CONTENANTS.forEach(c=>{retrait[c.key]+=r[c.key]||0;});
+    if(showAjoutSupp){const d=readGrid('ajout');CONTENANTS.forEach(c=>{depot[c.key]+=d[c.key]||0;});}
   }
   return {depot,retrait};
 }
@@ -1176,50 +1439,38 @@ async function submitIntervention(){
   const bsdNum=document.getElementById('i-bsd-num').value.trim().toUpperCase();
   const bsdDechet=document.getElementById('i-bsd-dechet').value.trim();
   const signature=getSigData();
-
   const {depot,retrait}=computeDepotRetrait();
-
-  // Validation dépôt
   if(currentOpType==='depot'&&totalStock(depot)===0){showToast('Indiquer au moins 1 contenant déposé');return;}
-
-  // Snapshot stock avant
   const stockAvant=copyStock(ch);
-
-  // Calculer stock après
   const stockApres={};
   CONTENANTS.forEach(c=>{stockApres[c.key]=Math.max(0,(ch[c.key]||0)+(depot[c.key]||0)-(retrait[c.key]||0));});
-
-  // Mettre à jour le chantier
   CONTENANTS.forEach(c=>{ch[c.key]=stockApres[c.key];});
   ch.lastInterventionDate=date;
   if(bsdNum){ch.lastBsdNum=bsdNum;ch.lastBsdType=intervBSDType||'BSD';}
-
-  // Clôturer si enlèvement total
-  if(currentOpType==='enlevement'&&totalStock(stockApres)===0){ch.cloture=true;ch.alerte=false;}
+  if(currentOpType==='enlevement'&&totalStock(stockApres)===0){ch.cloture=true;ch.alerte=false;ch.prochaineCollecte=null;}
   else ch.cloture=false;
-
-  const entry={
-    id:state.nextIntervId++,chantierId:currentChantierId,clientId:ch.clientId,
-    clientNom:client?client.nom:'?',chantierNom:ch.nom,
-    type:currentOpType,date,note,bsdNum,bsdType:intervBSDType||null,bsdDechet,
-    stockAvant,depot,retrait,stockApres,
-  };
+  // Effacer la date planifiée si elle est passée
+  if(ch.prochaineCollecte&&ch.prochaineCollecte<=date)ch.prochaineCollecte=null;
+  const entry={id:state.nextIntervId++,chantierId:currentChantierId,clientId:ch.clientId,clientNom:client?client.nom:'?',chantierNom:ch.nom,type:currentOpType,date,note,bsdNum,bsdType:intervBSDType||null,bsdDechet,stockAvant,depot,retrait,stockApres};
   if(intervPhoto)entry.photo=intervPhoto;
   if(signature)entry.signature=signature;
   state.interventions.push(entry);
-
   closeModal('modal-intervention');renderAll();
   await saveToCloud();
   showToast('✓ '+TYPE_LABELS[currentOpType]+' enregistré');
   setTimeout(()=>{if(confirm('Générer le bon d\'intervention PDF ?')){currentDetailId=entry.id;generatePDF(entry.id);}},300);
 }
 
-// ─── DELETE ──────────────────────────────────────────────
+// ─── DELETE INTERVENTION ─────────────────────────────────
 async function deleteIntervention(hId){
-  if(!confirm('Supprimer cette intervention ?\nNote : le stock du chantier ne sera pas recalculé automatiquement.'))return;
-  state.interventions=state.interventions.filter(h=>h.id!==hId);
+  const h=state.interventions.find(x=>x.id===hId);if(!h)return;
+  if(!confirm('Supprimer cette intervention ?\nLe stock du chantier sera recalculé automatiquement.'))return;
+  const chantierId=h.chantierId;
+  state.interventions=state.interventions.filter(x=>x.id!==hId);
+  // Recalculer le stock
+  recalculerStockChantier(chantierId);
   closeModal('modal-detail');renderAll();
-  await saveToCloud();showToast('✓ Intervention supprimée');
+  await saveToCloud();showToast('✓ Intervention supprimée — stock recalculé');
 }
 
 // ─── BON PDF ─────────────────────────────────────────────
@@ -1229,9 +1480,8 @@ function generatePDF(hId){
   const adresse=ch?[ch.rue,[ch.codePostal,ch.ville].filter(Boolean).join(' ')].filter(Boolean).join(', '):'';
   const bonNum='BON-'+String(h.id).padStart(4,'0')+'-'+String(h.date||today()).replace(/-/g,'');
   const dep=h.depot||{};const ret=h.retrait||{};
-
   let contenantsHtml='';
-  if(h.type==='echange'){contenantsHtml+=`<div style="font-size:11px;font-weight:700;color:var(--blue-text);margin-bottom:6px">Échange plein ↔ vide</div>`;}
+  if(h.type==='echange')contenantsHtml+=`<div style="font-size:11px;font-weight:700;color:var(--blue-text);margin-bottom:6px">Échange plein ↔ vide</div>`;
   const depParts=CONTENANTS.filter(c=>dep[c.key]>0);
   const retParts=CONTENANTS.filter(c=>ret[c.key]>0);
   if(depParts.length)contenantsHtml+=`<div style="font-size:11px;font-weight:700;color:var(--green-text);margin-bottom:4px">Déposés :</div><div class="pdf-contenants">${depParts.map(c=>`<div class="pdf-contenant"><div class="pdf-contenant-qty">+${dep[c.key]}</div><div class="pdf-contenant-lbl">${c.emoji} ${c.label}</div></div>`).join('')}</div>`;
@@ -1239,9 +1489,8 @@ function generatePDF(hId){
   if(h.stockApres&&totalStock(h.stockApres)>0){
     const sp=CONTENANTS.filter(c=>h.stockApres[c.key]>0);
     contenantsHtml+=`<div style="font-size:11px;font-weight:700;color:var(--gray-600);margin:8px 0 4px">Stock final sur site :</div><div class="pdf-contenants">${sp.map(c=>`<div class="pdf-contenant"><div class="pdf-contenant-qty" style="color:var(--gray-900)">${h.stockApres[c.key]}</div><div class="pdf-contenant-lbl">${c.emoji} ${c.label}</div></div>`).join('')}</div>`;
-  } else if(h.type==='enlevement'){contenantsHtml+=`<div style="font-size:11px;color:var(--gray-400);margin-top:8px">→ Site clôturé — tous les contenants retirés</div>`;}
+  } else if(h.type==='enlevement')contenantsHtml+=`<div style="font-size:11px;color:var(--gray-400);margin-top:8px">→ Site clôturé</div>`;
   if(!contenantsHtml)contenantsHtml='<p style="font-size:12px;color:var(--gray-400)">—</p>';
-
   const sigHtml=h.signature?`<img src="${h.signature}" style="max-height:60px;max-width:100%">`:' ';
   const photoHtml=h.photo?`<div class="pdf-section"><div class="pdf-section-title">Photo</div><img src="${h.photo}" style="width:100%;max-height:140px;object-fit:cover;border-radius:4px;border:1px solid var(--border)"></div>`:'';
   document.getElementById('pdf-content').innerHTML=`
@@ -1292,11 +1541,11 @@ async function saveParams(){
 function openNewClient(){
   document.getElementById('client-modal-title').textContent='Nouveau client';
   ['c-nom','c-ville','c-tel','c-contact','c-note'].forEach(id=>document.getElementById(id).value='');
-  editingId=null;document.getElementById('modal-client').classList.add('open');
+  editingClientId=null;document.getElementById('modal-client').classList.add('open');
 }
 function openEditClient(clientId){
   const c=state.clients.find(x=>x.id===clientId);if(!c)return;
-  editingId=clientId;
+  editingClientId=clientId;
   document.getElementById('client-modal-title').textContent='Modifier le client';
   document.getElementById('c-nom').value=c.nom||'';document.getElementById('c-ville').value=c.ville||'';
   document.getElementById('c-tel').value=c.tel||'';document.getElementById('c-contact').value=c.contact||'';
@@ -1306,8 +1555,8 @@ function openEditClient(clientId){
 async function saveClient(){
   const nom=document.getElementById('c-nom').value.trim();
   if(!nom){showToast('Indiquer le nom du client');return;}
-  if(editingId){
-    const c=state.clients.find(x=>x.id===editingId);
+  if(editingClientId){
+    const c=state.clients.find(x=>x.id===editingClientId);
     if(c){c.nom=nom;c.ville=document.getElementById('c-ville').value.trim();c.tel=document.getElementById('c-tel').value.trim();c.contact=document.getElementById('c-contact').value.trim();c.note=document.getElementById('c-note').value.trim();}
   } else {
     state.clients.push({id:state.nextClientId++,nom,ville:document.getElementById('c-ville').value.trim(),tel:document.getElementById('c-tel').value.trim(),contact:document.getElementById('c-contact').value.trim(),note:document.getElementById('c-note').value.trim()});
@@ -1333,18 +1582,20 @@ function openNewChantier(){
   const client=state.clients.find(c=>c.id===currentClientId);
   document.getElementById('chantier-modal-sub').textContent=client?'Client : '+client.nom:'';
   ['ch-nom','ch-rue','ch-ville','ch-codePostal','ch-complement','ch-contact-nom','ch-contact-tel','ch-contact-role'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ch-prochaine-collecte').value='';
   document.getElementById('ch-gps-status').textContent='';
-  chantierGPS=null;editingId=null;document.getElementById('modal-chantier').classList.add('open');
+  chantierGPS=null;editingChantierId=null;document.getElementById('modal-chantier').classList.add('open');
 }
 function editChantier(chantierId){
   const ch=state.chantiers.find(x=>x.id===chantierId);if(!ch)return;
-  editingId=chantierId;
+  editingChantierId=chantierId;
   document.getElementById('chantier-modal-title').textContent='Modifier le chantier';
   document.getElementById('chantier-modal-sub').textContent='';
   document.getElementById('ch-nom').value=ch.nom||'';document.getElementById('ch-rue').value=ch.rue||'';
   document.getElementById('ch-ville').value=ch.ville||'';document.getElementById('ch-codePostal').value=ch.codePostal||'';
   document.getElementById('ch-complement').value=ch.complement||'';document.getElementById('ch-contact-nom').value=ch.contactNom||'';
   document.getElementById('ch-contact-tel').value=ch.contactTel||'';document.getElementById('ch-contact-role').value=ch.contactRole||'';
+  document.getElementById('ch-prochaine-collecte').value=ch.prochaineCollecte||'';
   chantierGPS=ch.gps||null;
   document.getElementById('ch-gps-status').textContent=chantierGPS?`✓ ${chantierGPS.lat}, ${chantierGPS.lng}`:'';
   document.getElementById('modal-chantier').classList.add('open');
@@ -1352,8 +1603,8 @@ function editChantier(chantierId){
 async function saveChantier(){
   const nom=document.getElementById('ch-nom').value.trim();
   if(!nom){showToast('Indiquer le nom du chantier');return;}
-  const data={nom,rue:document.getElementById('ch-rue').value.trim(),ville:document.getElementById('ch-ville').value.trim(),codePostal:document.getElementById('ch-codePostal').value.trim(),complement:document.getElementById('ch-complement').value.trim(),contactNom:document.getElementById('ch-contact-nom').value.trim(),contactTel:document.getElementById('ch-contact-tel').value.trim(),contactRole:document.getElementById('ch-contact-role').value.trim(),gps:chantierGPS||null};
-  if(editingId){const ch=state.chantiers.find(x=>x.id===editingId);if(ch)Object.assign(ch,data);}
+  const data={nom,rue:document.getElementById('ch-rue').value.trim(),ville:document.getElementById('ch-ville').value.trim(),codePostal:document.getElementById('ch-codePostal').value.trim(),complement:document.getElementById('ch-complement').value.trim(),contactNom:document.getElementById('ch-contact-nom').value.trim(),contactTel:document.getElementById('ch-contact-tel').value.trim(),contactRole:document.getElementById('ch-contact-role').value.trim(),gps:chantierGPS||null,prochaineCollecte:document.getElementById('ch-prochaine-collecte').value||null};
+  if(editingChantierId){const ch=state.chantiers.find(x=>x.id===editingChantierId);if(ch)Object.assign(ch,data);}
   else{const n={id:state.nextChantierId++,clientId:currentClientId,cloture:false,alerte:false,lastInterventionDate:null,lastBsdNum:null,lastBsdType:null,...data};CONTENANTS.forEach(c=>{n[c.key]=0;});state.chantiers.push(n);}
   closeModal('modal-chantier');renderAll();await saveToCloud();showToast('✓ Chantier enregistré');
 }
@@ -1379,7 +1630,7 @@ async function toggleAlerte(chantierId){
 function openMenu(){document.getElementById('menu').classList.add('open');}
 function exportCSV(){
   closeModal('menu');
-  const headers=['Date','Client','Chantier','Type',...CONTENANTS.map(c=>'Dépôt '+c.label),...CONTENANTS.map(c=>'Retrait '+c.label),...CONTENANTS.map(c=>'Stock '+c.label),'Type BSD','N° BSD','Déchet','Note','Photo','Signé'];
+  const headers=['Date','Client','Chantier','Type',...CONTENANTS.map(c=>'Dépôt '+c.label),...CONTENANTS.map(c=>'Retrait '+c.label),...CONTENANTS.map(c=>'Stock '+c.label),'BSD Type','N° BSD','Déchet','Note','Photo','Signé'];
   const rows=[headers];
   [...state.interventions].sort((a,b)=>String(b.date).localeCompare(String(a.date))).forEach(h=>{
     rows.push([h.date,h.clientNom,h.chantierNom,TYPE_LABELS[h.type]||h.type,...CONTENANTS.map(c=>h.depot?h.depot[c.key]||0:0),...CONTENANTS.map(c=>h.retrait?h.retrait[c.key]||0:0),...CONTENANTS.map(c=>h.stockApres?h.stockApres[c.key]||0:0),h.bsdType||'',h.bsdNum||'',h.bsdDechet||'',h.note||'',h.photo?'Oui':'Non',h.signature?'Oui':'Non']);
@@ -1391,13 +1642,13 @@ function exportCSV(){
 }
 async function confirmReset(){
   closeModal('menu');
-  if(confirm('Réinitialiser TOUTES les données ?\nMac ET iPhone seront effacés.\nIrréversible.')){
+  if(confirm('Réinitialiser TOUTES les données ?\nIrréversible.')){
     state={clients:[],chantiers:[],interventions:[],nextClientId:1,nextChantierId:1,nextIntervId:1,params:{delai:60}};
     goToClients();await saveToCloud();renderAll();showToast('Données réinitialisées');
   }
 }
 
-// ─── UTILS MODAL ─────────────────────────────────────────
+// ─── UTILS ───────────────────────────────────────────────
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function handleOverlayClick(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 function changeQty(id,delta){const el=document.getElementById(id);if(el)el.value=Math.max(0,(parseInt(el.value)||0)+delta);}
