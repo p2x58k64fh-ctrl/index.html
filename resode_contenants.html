@@ -671,6 +671,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="menu-sheet">
     <div class="menu-handle"></div>
     <div class="menu-title">Options</div>
+    <button class="menu-item" onclick="resetGeocodage()"><div class="menu-icon blue"><i class="ti ti-map-pin"></i></div><div><div class="menu-item-label">Relancer la carte</div><div class="menu-item-sub">Reforcer le géocodage des adresses</div></div></button>
     <button class="menu-item" onclick="exportCSV()"><div class="menu-icon gray"><i class="ti ti-table-export"></i></div><div><div class="menu-item-label">Exporter CSV</div><div class="menu-item-sub">Historique complet dans Excel</div></div></button>
     <button class="menu-item" onclick="confirmReset()"><div class="menu-icon red"><i class="ti ti-trash"></i></div><div><div class="menu-item-label">Réinitialiser</div><div class="menu-item-sub">Supprime toutes les données</div></div></button>
   </div>
@@ -922,7 +923,8 @@ function renderDashboard(){
 
 function goToChantierDirect(chantierId){
   const ch=state.chantiers.find(x=>x.id===chantierId);if(!ch)return;
-  switchTab('clients',document.querySelectorAll('.tab')[1]);
+  const clientsTab=[...document.querySelectorAll('.tab')].find(t=>t.textContent.includes('Clients'));
+  switchTab('clients',clientsTab);
   goToChantiers(ch.clientId);
 }
 
@@ -956,7 +958,7 @@ function switchTab(tab,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   if(tab==='carte')initCarte();
-
+  if(tab==='dashboard')renderDashboard();
   if(tab==='historique')renderHistorique();
   if(tab==='params')document.getElementById('p-delai').value=getDelai();
   if(tab==='clients'){if(currentClientId)renderChantiers();else renderClients();}
@@ -1646,7 +1648,15 @@ async function toggleAlerte(chantierId){
 }
 
 // ─── MENU ────────────────────────────────────────────────
-function openMenu(){document.getElementById('menu').classList.add('open');}
+async function resetGeocodage(){
+  closeModal('menu');
+  // Effacer tous les gpsGeocode pour forcer un nouveau géocodage
+  state.chantiers.forEach(ch=>{if(!ch.gps)ch.gpsGeocode=undefined;});
+  await saveToCloud();
+  showToast('✓ Géocodage réinitialisé — ouvre la carte pour relancer');
+}
+
+
 function exportCSV(){
   closeModal('menu');
   const headers=['Date','Client','Chantier','Type',...CONTENANTS.map(c=>'Dépôt '+c.label),...CONTENANTS.map(c=>'Retrait '+c.label),...CONTENANTS.map(c=>'Stock '+c.label),'BSD Type','N° BSD','Déchet','Note','Photo','Signé'];
@@ -1811,19 +1821,47 @@ function renderCarte(){
 async function geocoderChantiersSansGPS(){
   const aGéocoder=state.chantiers.filter(ch=>!ch.cloture&&!ch.gps&&!ch.gpsGeocode&&(ch.rue||ch.ville));
   if(!aGéocoder.length)return false;
+  // Réessayer aussi les chantiers avec gpsGeocode null (échec précédent)
+  const aRéessayer=state.chantiers.filter(ch=>!ch.cloture&&!ch.gps&&ch.gpsGeocode===null&&(ch.rue||ch.ville));
+  const liste=[...aGéocoder,...aRéessayer];
+  if(!liste.length)return false;
   let modifié=false;
-  for(const ch of aGéocoder){
-    const adresse=[ch.rue,ch.codePostal,ch.ville,'France'].filter(Boolean).join(', ');
+  for(const ch of liste){
+    // Utiliser les paramètres structurés de Nominatim pour meilleure précision
+    const params=new URLSearchParams({
+      format:'json',
+      limit:'1',
+      countrycodes:'fr',
+      'accept-language':'fr',
+    });
+    if(ch.rue)params.append('street',ch.rue);
+    if(ch.ville)params.append('city',ch.ville);
+    if(ch.codePostal)params.append('postalcode',ch.codePostal);
+    params.append('country','France');
     try{
-      const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}&limit=1`,{headers:{'Accept-Language':'fr'}});
+      const r=await fetch(`https://nominatim.openstreetmap.org/search?${params.toString()}`);
       const data=await r.json();
       if(data&&data[0]){
         ch.gpsGeocode={lat:parseFloat(data[0].lat).toFixed(6),lng:parseFloat(data[0].lon).toFixed(6)};
         modifié=true;
+      } else {
+        // Fallback : essai avec juste ville + CP
+        const p2=new URLSearchParams({format:'json',limit:'1',countrycodes:'fr'});
+        if(ch.ville)p2.append('city',ch.ville);
+        if(ch.codePostal)p2.append('postalcode',ch.codePostal);
+        p2.append('country','France');
+        const r2=await fetch(`https://nominatim.openstreetmap.org/search?${p2.toString()}`);
+        const data2=await r2.json();
+        if(data2&&data2[0]){
+          ch.gpsGeocode={lat:parseFloat(data2[0].lat).toFixed(6),lng:parseFloat(data2[0].lon).toFixed(6)};
+          modifié=true;
+        } else {
+          ch.gpsGeocode=null; // marquer comme échoué pour réessayer plus tard
+        }
+        await new Promise(res=>setTimeout(res,1100));
       }
-      // Respecter la limite de 1 req/s de Nominatim
       await new Promise(res=>setTimeout(res,1100));
-    }catch(e){}
+    }catch(e){ch.gpsGeocode=null;}
   }
   if(modifié){await saveToCloud();}
   return modifié;
@@ -1833,7 +1871,8 @@ async function geocoderChantiersSansGPS(){
 function allerFiche(chantierId){
   const ch=state.chantiers.find(x=>x.id===chantierId);if(!ch)return;
   if(carteMap)carteMap.closePopup();
-  switchTab('clients',document.querySelectorAll('.tab')[1]);
+  const clientsTab=[...document.querySelectorAll('.tab')].find(t=>t.textContent.includes('Clients'));
+  switchTab('clients',clientsTab);
   goToChantiers(ch.clientId);
 }
 
