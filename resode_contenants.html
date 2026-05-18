@@ -1162,7 +1162,7 @@ function showDetail(hId){
     return `<div class="detail-section"><div class="detail-section-title"><i class="ti ti-recycle" style="color:var(--orange)"></i> Déchets collectés</div>${dc.map(d=>`
       <div style="padding:8px 0;border-bottom:1px solid var(--gray-100)">
         <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600">
-          <span>${CONTENANTS.find(c=>c.key===d.contenant)?.emoji||''} ${d.quantite} × ${CONTENANTS.find(c=>c.key===d.contenant)?.label||d.contenant}</span>
+          <span>${CONTENANTS.find(c=>c.key===d.contenant)?.emoji||''} ${d.quantite} × ${d.contenant==='autre'&&d.contenantAutre?d.contenantAutre:CONTENANTS.find(c=>c.key===d.contenant)?.label||d.contenant}</span>
         </div>
         <div style="font-size:12px;color:var(--orange);margin-top:3px">${d.nature==='Autre (préciser)'?d.natureAutre:d.nature}</div>
         ${d.cap?`<div style="font-size:11px;color:var(--gray-600);margin-top:2px">CAP : <span style="font-family:monospace">${d.cap}</span></div>`:''}
@@ -1440,7 +1440,7 @@ let dechetsListe=[];
 
 function ajouterDechet(){
   const id=Date.now();
-  dechetsListe.push({id,contenant:'caissePalette',quantite:1,nature:'Huile usagée',natureAutre:'',cap:'',bsdType:'BSD',bsdNum:''});
+  dechetsListe.push({id,contenant:'caissePalette',contenantAutre:'',quantite:1,nature:'Huile usagée',natureAutre:'',cap:'',bsdType:'BSD',bsdNum:''});
   renderDechetsListe();
 }
 
@@ -1469,6 +1469,7 @@ function renderDechetsListe(){
           ${CONTENANTS.map(c=>`<option value="${c.key}" ${d.contenant===c.key?'selected':''}>${c.emoji} ${c.label}</option>`).join('')}
         </select>
       </div>
+      ${d.contenant==='autre'?`<div class="field"><label>Préciser le contenant</label><input type="text" value="${d.contenantAutre||''}" oninput="setDechetVal(${d.id},'contenantAutre',this.value)" placeholder="Ex: Caisse métallique, jerricane…" style="border-color:var(--orange-border);color:#2C2E2C;-webkit-text-fill-color:#2C2E2C"></div>`:''}
       <div class="field">
         <label>Quantité</label>
         <input type="text" inputmode="numeric" value="${d.quantite}" onchange="setDechetVal(${d.id},'quantite',parseInt(this.value)||1)" style="color:#2C2E2C;-webkit-text-fill-color:#2C2E2C;border-color:var(--orange-border)">
