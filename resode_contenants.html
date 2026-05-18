@@ -302,6 +302,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .menu-item-sub{font-size:12px;color:var(--gray-400);margin-top:2px}
 .fc-btn{padding:5px 10px;border:1px solid var(--border);border-radius:20px;background:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--gray-600)}
 .fc-btn.fc-active{background:var(--gray-900);color:#fff;border-color:var(--gray-900)}
+.dechet-bloc{background:var(--orange-light);border:1px solid var(--orange-border);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}
+.dechet-bloc-title{font-size:12px;font-weight:700;color:var(--orange);margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.4px}
+.dechet-bloc .field{margin-bottom:8px}.dechet-bloc .field:last-child{margin-bottom:0}
+.dechet-bloc label{color:var(--orange)!important;font-size:11px}
+.dechet-bloc input,.dechet-bloc select{border-color:var(--orange-border)!important;font-size:13px;padding:8px 10px}
 .section{display:none}.section.active{display:block}
 
 @media(min-width:480px){.modal,.menu-sheet{border-radius:var(--radius-lg);margin:auto}.modal-overlay,.menu-overlay{align-items:center}}
@@ -556,6 +561,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="preview-stock" id="i-preview-stock">
       <div class="preview-stock-title">Nouveau stock après intervention</div>
       <div class="preview-items" id="i-preview-items"></div>
+    </div>
+
+    <!-- DÉCHETS COLLECTÉS (échange + enlèvement uniquement) -->
+    <div id="zone-dechets-collectes" style="display:none" class="form-section">
+      <div class="form-section-title"><i class="ti ti-recycle" style="font-size:14px;color:var(--orange)"></i> Déchets collectés</div>
+      <div style="font-size:12px;color:var(--orange);padding:8px 12px;background:var(--orange-light);border-radius:var(--radius-sm);margin-bottom:10px">Pour chaque contenant retiré, précise la nature du déchet, le CAP et le BSD associé.</div>
+      <div id="i-dechets-liste"></div>
+      <button onclick="ajouterDechet()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px dashed var(--orange);border-radius:var(--radius-sm);background:var(--orange-light);color:var(--orange);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px"><i class="ti ti-plus"></i> Ajouter un déchet collecté</button>
     </div>
     <!-- BSD MULTIPLE -->
     <div class="form-section">
@@ -1143,6 +1156,19 @@ function showDetail(hId){
     ${ch.contactNom?`<div class="detail-row"><span class="detail-lbl">Contact</span><span class="detail-val">${ch.contactNom}${ch.contactRole?' · '+ch.contactRole:''}</span></div>`:''}
     ${ch.contactTel?`<div class="detail-row"><span class="detail-lbl">Tél.</span><span class="detail-val"><a href="tel:${ch.contactTel.replace(/\s/g,'')}" class="phone-link">${ch.contactTel}</a></span></div>`:''}
   </div>`:'';
+  const dechetsHtml=(()=>{
+    const dc=h.dechetsCollectes||[];
+    if(!dc.length)return '';
+    return `<div class="detail-section"><div class="detail-section-title"><i class="ti ti-recycle" style="color:var(--orange)"></i> Déchets collectés</div>${dc.map(d=>`
+      <div style="padding:8px 0;border-bottom:1px solid var(--gray-100)">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600">
+          <span>${CONTENANTS.find(c=>c.key===d.contenant)?.emoji||''} ${d.quantite} × ${CONTENANTS.find(c=>c.key===d.contenant)?.label||d.contenant}</span>
+        </div>
+        <div style="font-size:12px;color:var(--orange);margin-top:3px">${d.nature==='Autre (préciser)'?d.natureAutre:d.nature}</div>
+        ${d.cap?`<div style="font-size:11px;color:var(--gray-600);margin-top:2px">CAP : <span style="font-family:monospace">${d.cap}</span></div>`:''}
+        ${d.bsdNum?`<div style="font-size:11px;color:var(--teal-text);margin-top:2px">${d.bsdType||'BSD'} : <span style="font-family:monospace">${d.bsdNum}</span></div>`:''}
+      </div>`).join('')}</div>`;
+  })();
   const sigHtml=h.signature?`<div class="detail-section"><div class="detail-section-title"><i class="ti ti-signature"></i> Signature</div><img src="${h.signature}" style="max-width:100%;border:1px solid var(--border);border-radius:var(--radius-sm)"></div>`:'';
   document.getElementById('detail-title').textContent=TYPE_LABELS[h.type]||h.type;
   document.getElementById('detail-content').innerHTML=`${photoHtml}
@@ -1152,7 +1178,7 @@ function showDetail(hId){
       <div class="detail-row"><span class="detail-lbl">Date</span><span class="detail-val">${fmtDate(h.date)}</span></div>
       ${h.note?`<div class="detail-row"><span class="detail-lbl">Note</span><span class="detail-val">${h.note}</span></div>`:''}
     </div>
-    ${actionHtml}${bsdHtml}${chHtml}${sigHtml}`;
+    ${actionHtml}${dechetsHtml}${bsdHtml}${chHtml}${sigHtml}`;
   document.getElementById('modal-detail').classList.add('open');
 }
 
@@ -1203,7 +1229,7 @@ function ouvrirStockManuel(chantierId){
       <div class="contenant-label">${c.emoji} ${c.label}</div>
       <div class="qty-ctrl">
         <button class="qty-btn" onclick="changeQtyStock('sm-${c.key}',-1)">−</button>
-        <input class="qty-val" id="sm-${c.key}" type="number" value="${ch[c.key]||0}" min="0" style="color:var(--gray-900)!important;-webkit-text-fill-color:var(--gray-900)!important;opacity:1!important">
+        <input class="qty-val" id="sm-${c.key}" type="text" inputmode="numeric" value="${ch[c.key]||0}" style="color:#2C2E2C;-webkit-text-fill-color:#2C2E2C;opacity:1">
         <button class="qty-btn" onclick="changeQtyStock('sm-${c.key}',1)">+</button>
       </div>
     </div>`).join('')}</div>`;
@@ -1304,7 +1330,7 @@ function openIntervention(chantierId,opType){
   document.getElementById('interv-sub').textContent=client?'Client : '+client.nom:'';
   document.getElementById('i-date').value=today();
   document.getElementById('i-note').value='';
-  resetBSDListe();resetPhoto();
+  resetBSDListe();resetDechetsListe();resetPhoto();
   selectOpType(opType||'depot');
   document.getElementById('modal-intervention').classList.add('open');
   setTimeout(()=>initSig(),100);
@@ -1316,7 +1342,7 @@ function buildGrid(id,values){
       <div class="contenant-label">${c.emoji} ${c.label}</div>
       <div class="qty-ctrl">
         <button class="qty-btn" onclick="changeQty('${id}-${c.key}',-1);updatePreview()">−</button>
-        <input class="qty-val" id="${id}-${c.key}" type="number" value="${values?values[c.key]||0:0}" min="0" oninput="updatePreview()">
+        <input class="qty-val" id="${id}-${c.key}" type="text" inputmode="numeric" value="${values?values[c.key]||0:0}" style="color:#2C2E2C;-webkit-text-fill-color:#2C2E2C;opacity:1" oninput="updatePreview()">
         <button class="qty-btn" onclick="changeQty('${id}-${c.key}',1);updatePreview()">+</button>
       </div>
     </div>`).join('')}</div>`;
@@ -1340,6 +1366,8 @@ function selectOpType(type){
   document.getElementById('zone-ajout-supp').style.display='none';
   document.getElementById('zone-retrait-supp').style.display='none';
   document.getElementById('i-preview-stock').style.display='none';
+  // Zone déchets collectés : visible sur échange et enlèvement
+  document.getElementById('zone-dechets-collectes').style.display=(type==='echange'||type==='enlevement')?'block':'none';
   const btn=document.getElementById('i-submit-btn');
   btn.className='btn-submit'+(type==='enlevement'?' orange':type==='echange'?' blue':'');
   btn.innerHTML={depot:'<i class="ti ti-check"></i> Enregistrer le dépôt',echange:'<i class="ti ti-check"></i> Confirmer l\'échange',enlevement:'<i class="ti ti-check"></i> Confirmer l\'enlèvement'}[type];
@@ -1406,7 +1434,73 @@ function computeDepotRetrait(){
   return {depot,retrait};
 }
 
-// ─── BSD MULTIPLE ────────────────────────────────────────
+// ─── DÉCHETS COLLECTÉS ───────────────────────────────────
+const NATURES_DECHETS=['Aérosols','Pâteux','Emballages souillés','Huile usagée','Liquide de refroidissement','Solvants','Acides','Bases','Amiante','Autre (préciser)'];
+let dechetsListe=[];
+
+function ajouterDechet(){
+  const id=Date.now();
+  dechetsListe.push({id,contenant:'caissePalette',quantite:1,nature:'Huile usagée',natureAutre:'',cap:'',bsdType:'BSD',bsdNum:''});
+  renderDechetsListe();
+}
+
+function supprimerDechet(id){
+  dechetsListe=dechetsListe.filter(d=>d.id!==id);
+  renderDechetsListe();
+}
+
+function setDechetVal(id,field,val){
+  const d=dechetsListe.find(x=>x.id===id);if(d)d[field]=val;
+  if(field==='nature')renderDechetsListe();
+}
+
+function renderDechetsListe(){
+  const el=document.getElementById('i-dechets-liste');if(!el)return;
+  if(!dechetsListe.length){el.innerHTML='';return;}
+  el.innerHTML=dechetsListe.map((d,idx)=>`
+    <div class="dechet-bloc">
+      <div class="dechet-bloc-title">
+        <span><i class="ti ti-recycle"></i> Déchet ${idx+1}</span>
+        <button onclick="supprimerDechet(${d.id})" style="margin-left:auto;background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;padding:2px 6px">✕</button>
+      </div>
+      <div class="field">
+        <label>Contenant concerné</label>
+        <select onchange="setDechetVal(${d.id},'contenant',this.value)" style="border-color:var(--orange-border)">
+          ${CONTENANTS.map(c=>`<option value="${c.key}" ${d.contenant===c.key?'selected':''}>${c.emoji} ${c.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Quantité</label>
+        <input type="text" inputmode="numeric" value="${d.quantite}" onchange="setDechetVal(${d.id},'quantite',parseInt(this.value)||1)" style="color:#2C2E2C;-webkit-text-fill-color:#2C2E2C;border-color:var(--orange-border)">
+      </div>
+      <div class="field">
+        <label>Nature du déchet</label>
+        <select onchange="setDechetVal(${d.id},'nature',this.value)" style="border-color:var(--orange-border)">
+          ${NATURES_DECHETS.map(n=>`<option value="${n}" ${d.nature===n?'selected':''}>${n}</option>`).join('')}
+        </select>
+      </div>
+      ${d.nature==='Autre (préciser)'?`<div class="field"><label>Préciser</label><input type="text" value="${d.natureAutre}" oninput="setDechetVal(${d.id},'natureAutre',this.value)" placeholder="Nature du déchet…" style="border-color:var(--orange-border)"></div>`:''}
+      <div class="field">
+        <label>CAP (Code d'Acceptation Préalable)</label>
+        <input type="text" value="${d.cap}" oninput="setDechetVal(${d.id},'cap',this.value.toUpperCase())" placeholder="Ex: CAP-2025-XXXX" style="font-family:monospace;border-color:var(--orange-border);color:#2C2E2C;-webkit-text-fill-color:#2C2E2C">
+      </div>
+      <div class="field">
+        <label>Type BSD</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <button class="bsd-type-btn ${d.bsdType==='BSD'?'selected':''}" onclick="setDechetVal(${d.id},'bsdType','BSD');renderDechetsListe()"><div class="bsd-btn-label">BSD</div><div class="bsd-btn-sub">Déchets dangereux</div></button>
+          <button class="bsd-type-btn ${d.bsdType==='BSDA'?'selected':''}" onclick="setDechetVal(${d.id},'bsdType','BSDA');renderDechetsListe()"><div class="bsd-btn-label">BSDA</div><div class="bsd-btn-sub">Amiante</div></button>
+        </div>
+      </div>
+      <div class="field">
+        <label>N° ${d.bsdType}</label>
+        <input type="text" value="${d.bsdNum}" oninput="setDechetVal(${d.id},'bsdNum',this.value.toUpperCase())" placeholder="Ex: BSD-20250513-XXXX" style="font-family:monospace;border-color:var(--orange-border);color:#2C2E2C;-webkit-text-fill-color:#2C2E2C">
+      </div>
+    </div>`).join('');
+}
+
+function resetDechetsListe(){dechetsListe=[];renderDechetsListe();}
+
+
 let bsdListe=[];
 
 function ajouterBSD(){
@@ -1518,7 +1612,7 @@ async function submitIntervention(){
   else ch.cloture=false;
   // Effacer la date planifiée si elle est passée
   if(ch.prochaineCollecte&&ch.prochaineCollecte<=date)ch.prochaineCollecte=null;
-  const entry={id:state.nextIntervId++,chantierId:currentChantierId,clientId:ch.clientId,clientNom:client?client.nom:'?',chantierNom:ch.nom,type:currentOpType,date,note,bsdNum,bsdType,bsdDechet,bsds,stockAvant,depot,retrait,stockApres};
+  const entry={id:state.nextIntervId++,chantierId:currentChantierId,clientId:ch.clientId,clientNom:client?client.nom:'?',chantierNom:ch.nom,type:currentOpType,date,note,bsdNum,bsdType,bsdDechet,bsds,dechetsCollectes:dechetsListe.map(d=>({...d})),stockAvant,depot,retrait,stockApres};
   if(intervPhoto)entry.photo=intervPhoto;
   if(signature)entry.signature=signature;
   state.interventions.push(entry);
@@ -1579,6 +1673,7 @@ function generatePDF(hId){
     <div class="pdf-section"><div class="pdf-section-title">Contenants</div>${contenantsHtml}</div>
     ${(()=>{const bsds=h.bsds&&h.bsds.length?h.bsds:h.bsdNum?[{type:h.bsdType||'BSD',num:h.bsdNum,dechet:h.bsdDechet||'',cap:''}]:[];return bsds.length?`<div class="pdf-section"><div class="pdf-section-title">Bordereau${bsds.length>1?'x':''}</div>${bsds.map(b=>`<div style="margin-bottom:8px;padding:6px;background:var(--teal-light);border-radius:4px"><div class="pdf-row"><span class="pdf-lbl">Type</span><span class="pdf-val">${b.type||'BSD'}</span></div><div class="pdf-row"><span class="pdf-lbl">Numéro</span><span class="pdf-val" style="font-family:monospace;font-weight:700">${b.num}</span></div>${b.dechet?`<div class="pdf-row"><span class="pdf-lbl">Déchet</span><span class="pdf-val">${b.dechet}</span></div>`:''}${b.cap?`<div class="pdf-row"><span class="pdf-lbl">CAP</span><span class="pdf-val" style="font-family:monospace">${b.cap}</span></div>`:''}</div>`).join('')}</div>`:'';})()} 
     ${h.note?`<div class="pdf-section"><div class="pdf-section-title">Observations</div><p style="font-size:12px">${h.note}</p></div>`:''}
+    ${(()=>{const dc=h.dechetsCollectes||[];return dc.length?`<div class="pdf-section"><div class="pdf-section-title">Déchets collectés</div>${dc.map(d=>`<div style="padding:5px 0;border-bottom:1px solid var(--gray-100)"><div class="pdf-row"><span class="pdf-lbl">Contenant</span><span class="pdf-val">${CONTENANTS.find(c=>c.key===d.contenant)?.emoji||''} ${d.quantite} × ${CONTENANTS.find(c=>c.key===d.contenant)?.label||d.contenant}</span></div><div class="pdf-row"><span class="pdf-lbl">Nature</span><span class="pdf-val">${d.nature==='Autre (préciser)'?d.natureAutre:d.nature}</span></div>${d.cap?`<div class="pdf-row"><span class="pdf-lbl">CAP</span><span class="pdf-val" style="font-family:monospace">${d.cap}</span></div>`:''} ${d.bsdNum?`<div class="pdf-row"><span class="pdf-lbl">${d.bsdType||'BSD'}</span><span class="pdf-val" style="font-family:monospace">${d.bsdNum}</span></div>`:''}</div>`).join('')}</div>`:'';})()}
     ${photoHtml}
     <div class="pdf-section"><div class="pdf-section-title">Signature du responsable site</div>
       <div class="pdf-sig-area">${sigHtml}</div>
