@@ -1451,7 +1451,7 @@ function supprimerDechet(id){
 
 function setDechetVal(id,field,val){
   const d=dechetsListe.find(x=>x.id===id);if(d)d[field]=val;
-  if(field==='nature')renderDechetsListe();
+  if(field==='nature'||field==='contenant')renderDechetsListe();
 }
 
 function renderDechetsListe(){
