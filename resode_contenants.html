@@ -904,16 +904,26 @@ function renderDashboard(){
   }
 
   // Tous les chantiers actifs
-  const actifs=state.chantiers.filter(ch=>!ch.cloture&&totalStock(ch)>0);
+  const actifs=state.chantiers.filter(ch=>!ch.cloture&&totalStock(ch)>0)
+    .sort((a,b)=>daysSince(b.lastInterventionDate)-daysSince(a.lastInterventionDate));
   if(actifs.length){
     html+=`<div class="dashboard-section"><div class="dashboard-title"><i class="ti ti-map-2" style="color:var(--blue)"></i> Parc contenants (${actifs.length} chantiers)</div><div class="alert-card">`;
     html+=actifs.map(ch=>{
       const client=state.clients.find(c=>c.id===ch.clientId);
       const tags=CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>`${ch[ct.key]} ${ct.label}`).join(', ');
+      const jours=daysSince(ch.lastInterventionDate);
+      const tot=totalStock(ch);
+      const joursColor=jours>getDelai()?'var(--red)':jours>getDelai()/2?'var(--amber)':'var(--green)';
       return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})">
         <div class="alert-dot" style="background:var(--blue)"></div>
-        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${tags}${ch.lastInterventionDate?' · '+daysSince(ch.lastInterventionDate)+'j':''}</div></div>
-        <div class="alert-right" style="color:var(--blue)">${totalStock(ch)}</div>
+        <div class="alert-main">
+          <div class="alert-nom">${ch.nom}</div>
+          <div class="alert-sub">${client?client.nom:'?'} · ${tags}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
+          <span style="font-size:13px;font-weight:700;color:var(--blue)">${tot} cont.</span>
+          ${ch.lastInterventionDate?`<span style="font-size:11px;font-weight:700;color:${joursColor}">${jours}j</span>`:'<span style="font-size:11px;color:var(--gray-400)">—</span>'}
+        </div>
       </div>`;
     }).join('');
     html+='</div></div>';
