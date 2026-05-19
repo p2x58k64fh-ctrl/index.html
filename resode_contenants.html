@@ -864,7 +864,7 @@ function renderDashboard(){
       const tot=totalStock(ch);
       return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})">
         <div class="alert-dot rouge"></div>
-        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${ch.ville||''}</div></div>
+        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${ch.ville||''}${ch.lastInterventionDate?' · '+daysSince(ch.lastInterventionDate)+'j':''}</div></div>
         <div class="alert-right" style="color:var(--red)">${tot} cont.</div>
       </div>`;
     }).join('');
@@ -880,7 +880,7 @@ function renderDashboard(){
       return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})">
         <div class="alert-dot amber"></div>
         <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${ch.ville||''}</div></div>
-        <div class="alert-right" style="color:var(--amber)">${jours}j</div>
+        <div class="alert-right" style="color:var(--amber)">${jours}j sans intervention</div>
       </div>`;
     }).join('');
     html+='</div></div>';
@@ -912,7 +912,7 @@ function renderDashboard(){
       const tags=CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>`${ch[ct.key]} ${ct.label}`).join(', ');
       return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})">
         <div class="alert-dot" style="background:var(--blue)"></div>
-        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${tags}</div></div>
+        <div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'} · ${tags}${ch.lastInterventionDate?' · '+daysSince(ch.lastInterventionDate)+'j':''}</div></div>
         <div class="alert-right" style="color:var(--blue)">${totalStock(ch)}</div>
       </div>`;
     }).join('');
