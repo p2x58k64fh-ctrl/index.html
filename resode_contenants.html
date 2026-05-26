@@ -766,8 +766,7 @@ async function loadFromCloud(){
     if(local){try{state=JSON.parse(local);migrerDonnees();renderAll();showToast('Mode hors-ligne');}catch(ex){}}
   }
 }
-
-  function syncNow(){loadFromCloud();}
+function syncNow(){loadFromCloud();}
 function saveGithubConfig(){
   const token=document.getElementById('param-gh-token').value.trim();
   const gistId=document.getElementById('param-gist-id').value.trim();
