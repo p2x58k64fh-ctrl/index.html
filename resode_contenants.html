@@ -734,6 +734,15 @@ const sigState={canvas:null,ctx:null,hasSig:false};
 let rapportClientId=null;
 
 // ─── CLOUD ───────────────────────────────────────────────
+function setSyncStatus(status,txt){
+  const bar=document.getElementById('sync-bar'),dot=document.getElementById('sync-dot');
+  if(!bar||!dot)return;
+  bar.className='sync-bar '+status;dot.className='sync-dot '+status;
+  document.getElementById('sync-txt').textContent=txt;
+  const ps=document.getElementById('param-sync-status');
+  if(ps)ps.textContent=status==='ok'?'✓ Connecté':status==='loading'?'Chargement…':'⚠ '+txt;
+}
+
 async function loadFromCloud(){
   const token=getGHToken();const gistId=getGistId();
   if(!token){
