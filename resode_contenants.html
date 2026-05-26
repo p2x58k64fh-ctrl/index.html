@@ -428,10 +428,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div style="margin-top:10px"><button class="btn-submit" onclick="saveParams()" style="padding:10px"><i class="ti ti-check"></i> Enregistrer</button></div>
       </div>
       <div class="param-block">
-        <div class="param-title"><i class="ti ti-cloud" style="color:var(--blue)"></i> Synchronisation</div>
+       <div class="param-title"><i class="ti ti-brand-github" style="color:var(--gray-900)"></i> Synchronisation GitHub</div>
         <div class="param-row"><div class="param-lbl">Statut</div><span id="param-sync-status" style="font-size:13px">—</span></div>
         <div class="param-row"><div class="param-lbl">Dernière sync</div><span id="param-last-sync" style="font-size:13px">—</span></div>
-        <div style="margin-top:10px"><button class="btn-submit" onclick="syncNow()" style="padding:10px;background:var(--blue)"><i class="ti ti-refresh"></i> Synchroniser</button></div>
+        <div class="param-row"><div><div class="param-lbl">Token GitHub</div><div class="param-sub">ghp_… (scope gist)</div></div><input id="param-gh-token" type="password" placeholder="ghp_…" style="width:140px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-family:monospace"></div>
+        <div class="param-row"><div><div class="param-lbl">Gist ID</div><div class="param-sub">Généré automatiquement</div></div><input id="param-gist-id" type="text" placeholder="auto…" style="width:140px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-family:monospace"></div>
+        <div style="margin-top:10px;display:flex;gap:8px"><button class="btn-submit" onclick="saveGithubConfig()" style="padding:10px;background:#24292e"><i class="ti ti-brand-github"></i> Enregistrer</button><button class="btn-submit" onclick="syncNow()" style="padding:10px;background:var(--blue);flex:0 0 auto;width:auto"><i class="ti ti-refresh"></i> Sync</button></div>
       </div>
       <div class="param-block">
         <div class="param-title"><i class="ti ti-building" style="color:var(--green)"></i> Société</div>
@@ -698,10 +700,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
-const JSONBIN_KEY='$2a$10$19klwCXfW.sn5Gm4P2iwFehb0GIhaith3cxslS5MjjVFoiicoYHyy';
-const JSONBIN_BIN='6a05f5c7adc21f119a9dab03';
-const JSONBIN_URL=`https://api.jsonbin.io/v3/b/${JSONBIN_BIN}`;
-const LOGO_B64='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';
+function getGHToken(){return localStorage.getItem('resode_gh_token')||'';}
+function getGistId(){return localStorage.getItem('resode_gist_id')||'';}
+function setGHToken(t){localStorage.setItem('resode_gh_token',t);}
+function setGistId(id){localStorage.setItem('resode_gist_id',id);}
+const GIST_FILENAME='resode_contenants_data.json';const LOGO_B64='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';
 
 const CONTENANTS=[
   {key:'caissePalette',label:'Caisse palette',emoji:'📦',cls:'cp'},
@@ -730,22 +733,48 @@ let rapportClientId=null;
 
 // ─── CLOUD ───────────────────────────────────────────────
 async function loadFromCloud(){
+  const token=getGHToken();const gistId=getGistId();
+  if(!token){
+    setSyncStatus('error','Configure le token GitHub dans Paramètres');
+    const local=localStorage.getItem('resode_state');
+    if(local){try{state=JSON.parse(local);migrerDonnees();renderAll();}catch(e){}}
+    else renderAll();
+    return;
+  }
   setSyncStatus('loading','Chargement…');
   try{
-    const r=await fetch(JSONBIN_URL+'/latest',{headers:{'X-Master-Key':JSONBIN_KEY}});
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const data=await r.json();
-    state=data.record;
-    if(!state.params)state.params={delai:60};
-    if(!state.chantiers)state.chantiers=[];
-    if(!state.interventions)state.interventions=[];
-    migrerDonnees();
+    if(!gistId){
+      const r=await fetch('https://api.github.com/gists',{method:'POST',headers:{'Authorization':'token '+token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify({description:'RESODE Suivi Contenants',public:false,files:{[GIST_FILENAME]:{content:JSON.stringify(state)}}})});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const data=await r.json();setGistId(data.id);
+      const el=document.getElementById('param-gist-id');if(el)el.value=data.id;
+      showToast('Gist créé : '+data.id);
+    } else {
+      const r=await fetch('https://api.github.com/gists/'+gistId,{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const data=await r.json();
+      const content=data.files?.[GIST_FILENAME]?.content;
+      if(content){state=JSON.parse(content);if(!state.params)state.params={delai:60};migrerDonnees();}
+    }
     setSyncStatus('ok','Synchronisé · '+fmtTime(new Date()));
     document.getElementById('param-last-sync').textContent=fmtTime(new Date());
+    localStorage.setItem('resode_state',JSON.stringify(state));
     renderAll();
-  }catch(e){setSyncStatus('error','Erreur de connexion');}
+  }catch(e){
+    setSyncStatus('error',e.message);
+    const local=localStorage.getItem('resode_state');
+    if(local){try{state=JSON.parse(local);migrerDonnees();renderAll();showToast('Mode hors-ligne');}catch(ex){}}
+  }
 }
 
+  function syncNow(){loadFromCloud();}
+function saveGithubConfig(){
+  const token=document.getElementById('param-gh-token').value.trim();
+  const gistId=document.getElementById('param-gist-id').value.trim();
+  if(token&&!token.startsWith('•'))setGHToken(token);
+  if(gistId)setGistId(gistId);
+  showToast('✓ Configuration enregistrée');syncNow();
+}
 function migrerDonnees(){
   state.chantiers.forEach(ch=>{
     CONTENANTS.forEach(ct=>{if(ch[ct.key]===undefined)ch[ct.key]=0;});
@@ -767,21 +796,23 @@ function migrerDonnees(){
 }
 
 async function saveToCloud(){
+  localStorage.setItem('resode_state',JSON.stringify(state));
+  const token=getGHToken();let gistId=getGistId();
+  if(!token){setSyncStatus('error','Token GitHub manquant');return;}
   setSyncStatus('loading','Sauvegarde…');
   try{
-    const r=await fetch(JSONBIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify(state)});
-    if(!r.ok)throw new Error('HTTP '+r.status);
+    if(!gistId){
+      const r=await fetch('https://api.github.com/gists',{method:'POST',headers:{'Authorization':'token '+token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify({description:'RESODE Suivi Contenants',public:false,files:{[GIST_FILENAME]:{content:JSON.stringify(state)}}})});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const data=await r.json();gistId=data.id;setGistId(gistId);
+      const el=document.getElementById('param-gist-id');if(el)el.value=gistId;
+    } else {
+      const r=await fetch('https://api.github.com/gists/'+gistId,{method:'PATCH',headers:{'Authorization':'token '+token,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify({files:{[GIST_FILENAME]:{content:JSON.stringify(state)}}})});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+    }
     setSyncStatus('ok','Synchronisé · '+fmtTime(new Date()));
     document.getElementById('param-last-sync').textContent=fmtTime(new Date());
-  }catch(e){setSyncStatus('error','Erreur de sauvegarde');showToast('⚠ Sauvegarde échouée');}
-}
-
-function syncNow(){loadFromCloud();}
-function setSyncStatus(status,txt){
-  const bar=document.getElementById('sync-bar'),dot=document.getElementById('sync-dot');
-  bar.className='sync-bar '+status;dot.className='sync-dot '+status;
-  document.getElementById('sync-txt').textContent=txt;
-  document.getElementById('param-sync-status').textContent=status==='ok'?'✓ Connecté':status==='loading'?'Chargement…':'⚠ Erreur';
+  }catch(e){setSyncStatus('error','Erreur : '+e.message);showToast('Cloud KO — données sauvées localement');}
 }
 
 // ─── UTILS ───────────────────────────────────────────────
@@ -2101,8 +2132,18 @@ function allerFiche(chantierId){
 
 
 document.getElementById('header-logo').src='data:image/png;base64,'+LOGO_B64;
-loadFromCloud();
-setInterval(loadFromCloud,120000);
+(function(){
+  const token=getGHToken();
+  if(!token){
+    setSyncStatus('error','Configure le token GitHub dans Paramètres');
+    const local=localStorage.getItem('resode_state');
+    if(local){try{state=JSON.parse(local);migrerDonnees();}catch(e){}}
+    renderAll();
+  } else {
+    loadFromCloud();
+    setInterval(loadFromCloud,120000);
+  }
+})();
 </script>
 </body>
 </html>
