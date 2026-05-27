@@ -380,6 +380,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="tab active" onclick="switchTab('clients',this)"><i class="ti ti-users" style="font-size:12px"></i> Clients</button>
     <button class="tab" onclick="switchTab('carte',this)"><i class="ti ti-map" style="font-size:12px"></i> Carte</button>
     <button class="tab" onclick="switchTab('historique',this)"><i class="ti ti-history" style="font-size:12px"></i> Historique</button>
+    <button class="tab" onclick="switchTab('analyses',this)"><i class="ti ti-chart-bar" style="font-size:12px"></i> Analyses</button>
     <button class="tab" onclick="switchTab('params',this)"><i class="ti ti-settings" style="font-size:12px"></i> Paramètres</button>
   </div>
 
@@ -443,6 +444,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
 
     <!-- PARAMS -->
+    <div id="tab-analyses" class="section">
+      <div id="analyses-content">
+        <!-- Filtres -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px;box-shadow:var(--shadow)">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-filter" style="color:var(--blue)"></i> Filtres</div>
+          <div class="field-row" style="margin-bottom:8px">
+            <div class="field" style="margin-bottom:0"><label>Client</label>
+              <select id="an-client" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">
+                <option value="">Tous les clients</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom:0"><label>Chantier</label>
+              <select id="an-chantier" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">
+                <option value="">Tous les chantiers</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row" style="margin-bottom:8px">
+            <div class="field" style="margin-bottom:0"><label>Du</label><input type="date" id="an-debut" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit"></div>
+            <div class="field" style="margin-bottom:0"><label>Au</label><input type="date" id="an-fin" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit"></div>
+          </div>
+          <div class="field" style="margin-bottom:8px"><label>Type d'intervention</label>
+            <select id="an-type" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">
+              <option value="">Tous les types</option>
+              <option value="depot">Dépôts</option>
+              <option value="echange">Échanges</option>
+              <option value="enlevement">Enlèvements</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button onclick="resetFiltresAnalyses()" style="flex:1;padding:9px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:var(--gray-600)"><i class="ti ti-refresh"></i> Réinitialiser</button>
+            <button onclick="exportAnalysesCSV()" style="flex:1;padding:9px;border:none;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit"><i class="ti ti-table-export"></i> Export CSV</button>
+          </div>
+        </div>
+        <!-- Résultats -->
+        <div id="an-resultats"></div>
+      </div>
+    </div>
+
     <div id="tab-params" class="section">
       <div class="param-block">
         <div class="param-title"><i class="ti ti-clock-exclamation" style="color:var(--amber)"></i> Alerte vieillissement</div>
@@ -2235,6 +2275,229 @@ function allerFiche(chantierId){
 document.getElementById('header-logo').src='data:image/png;base64,'+LOGO_B64;
 loadFromCloud();
 setInterval(loadFromCloud,120000);
+
+// ─── ANALYSES ────────────────────────────────────────────
+function initAnalyses(){
+  // Remplir le select clients
+  const selC=document.getElementById('an-client');
+  const selCh=document.getElementById('an-chantier');
+  const curC=selC.value;
+  selC.innerHTML='<option value="">Tous les clients</option>';
+  [...state.clients].sort((a,b)=>a.nom.localeCompare(b.nom,'fr')).forEach(c=>{
+    selC.innerHTML+=`<option value="${c.id}">${c.nom}</option>`;
+  });
+  selC.value=curC;
+  // Dates par défaut : année en cours
+  const now=new Date();
+  if(!document.getElementById('an-debut').value){
+    document.getElementById('an-debut').value=new Date(now.getFullYear(),0,1).toISOString().split('T')[0];
+    document.getElementById('an-fin').value=today();
+  }
+  renderAnalyses();
+}
+
+function resetFiltresAnalyses(){
+  document.getElementById('an-client').value='';
+  document.getElementById('an-chantier').value='';
+  document.getElementById('an-type').value='';
+  const now=new Date();
+  document.getElementById('an-debut').value=new Date(now.getFullYear(),0,1).toISOString().split('T')[0];
+  document.getElementById('an-fin').value=today();
+  updateChantiersSelect();
+  renderAnalyses();
+}
+
+function updateChantiersSelect(){
+  const clientId=parseInt(document.getElementById('an-client').value)||null;
+  const sel=document.getElementById('an-chantier');
+  sel.innerHTML='<option value="">Tous les chantiers</option>';
+  state.chantiers.filter(ch=>!clientId||ch.clientId===clientId)
+    .sort((a,b)=>a.nom.localeCompare(b.nom,'fr'))
+    .forEach(ch=>{sel.innerHTML+=`<option value="${ch.id}">${ch.nom}</option>`;});
+  sel.value='';
+}
+
+document.getElementById('an-client').addEventListener('change',function(){
+  updateChantiersSelect();renderAnalyses();
+});
+
+function getFilteredIntervs(){
+  const clientId=parseInt(document.getElementById('an-client').value)||null;
+  const chantierId=parseInt(document.getElementById('an-chantier').value)||null;
+  const type=document.getElementById('an-type').value;
+  const debut=document.getElementById('an-debut').value;
+  const fin=document.getElementById('an-fin').value;
+  return state.interventions.filter(i=>{
+    if(clientId&&i.clientId!==clientId)return false;
+    if(chantierId&&i.chantierId!==chantierId)return false;
+    if(type&&i.type!==type)return false;
+    if(debut&&i.date<debut)return false;
+    if(fin&&i.date>fin)return false;
+    return true;
+  });
+}
+
+function renderAnalyses(){
+  const intervs=getFilteredIntervs();
+  const el=document.getElementById('an-resultats');
+  if(!intervs.length){
+    el.innerHTML='<div class="empty-state"><i class="ti ti-chart-bar"></i><p>Aucune intervention sur cette période.</p></div>';
+    return;
+  }
+
+  // Stats globales
+  const nbDepot=intervs.filter(i=>i.type==='depot').length;
+  const nbEchange=intervs.filter(i=>i.type==='echange').length;
+  const nbEnlevement=intervs.filter(i=>i.type==='enlevement').length;
+  const nbBSD=intervs.filter(i=>i.bsdNum||(i.bsds&&i.bsds.length)).length;
+  const clientsUniques=new Set(intervs.map(i=>i.clientId)).size;
+  const chantiersUniques=new Set(intervs.map(i=>i.chantierId)).size;
+
+  // Contenants déposés et retirés totaux
+  const totalDep={},totalRet={};
+  CONTENANTS.forEach(c=>{totalDep[c.key]=0;totalRet[c.key]=0;});
+  intervs.forEach(i=>{
+    CONTENANTS.forEach(c=>{
+      totalDep[c.key]+=(i.depot?i.depot[c.key]||0:0);
+      totalRet[c.key]+=(i.retrait?i.retrait[c.key]||0:0);
+    });
+  });
+
+  // Déchets collectés
+  const dechets=[];
+  intervs.forEach(i=>{if(i.dechetsCollectes)dechets.push(...i.dechetsCollectes);});
+  const naturesCount={};
+  dechets.forEach(d=>{
+    const n=d.nature==='Autre (préciser)'?d.natureAutre||'Autre':d.nature;
+    naturesCount[n]=(naturesCount[n]||0)+d.quantite;
+  });
+
+  // Par client
+  const parClient={};
+  intervs.forEach(i=>{
+    if(!parClient[i.clientId])parClient[i.clientId]={nom:i.clientNom,nb:0,depot:0,echange:0,enlevement:0,bsd:0};
+    parClient[i.clientId].nb++;
+    parClient[i.clientId][i.type]++;
+    if(i.bsdNum||(i.bsds&&i.bsds.length))parClient[i.clientId].bsd++;
+  });
+
+  // Par chantier
+  const parChantier={};
+  intervs.forEach(i=>{
+    if(!parChantier[i.chantierId])parChantier[i.chantierId]={nom:i.chantierNom,clientNom:i.clientNom,nb:0,depot:0,echange:0,enlevement:0,derniere:i.date};
+    parChantier[i.chantierId].nb++;
+    parChantier[i.chantierId][i.type]++;
+    if(i.date>parChantier[i.chantierId].derniere)parChantier[i.chantierId].derniere=i.date;
+  });
+
+  let html='';
+
+  // Bloc stats globales
+  html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
+    <div class="stat-card"><div class="stat-val blue">${intervs.length}</div><div class="stat-lbl">Interventions</div></div>
+    <div class="stat-card"><div class="stat-val green">${clientsUniques}</div><div class="stat-lbl">Clients</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--teal)">${nbBSD}</div><div class="stat-lbl">BSD émis</div></div>
+    <div class="stat-card"><div class="stat-val green">${nbDepot}</div><div class="stat-lbl">Dépôts</div></div>
+    <div class="stat-card"><div class="stat-val blue">${nbEchange}</div><div class="stat-lbl">Échanges</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--orange)">${nbEnlevement}</div><div class="stat-lbl">Enlèvements</div></div>
+  </div>`;
+
+  // Contenants déposés
+  const depItems=CONTENANTS.filter(c=>totalDep[c.key]>0||totalRet[c.key]>0);
+  if(depItems.length){
+    html+=`<div class="param-block"><div class="param-title"><i class="ti ti-package" style="color:var(--green)"></i> Mouvements contenants</div>`;
+    depItems.forEach(c=>{
+      html+=`<div class="param-row"><div class="param-lbl">${c.emoji} ${c.label}</div>
+        <div style="display:flex;gap:12px;font-size:13px">
+          ${totalDep[c.key]>0?`<span style="color:var(--green);font-weight:600">+${totalDep[c.key]} déposés</span>`:''}
+          ${totalRet[c.key]>0?`<span style="color:var(--orange);font-weight:600">-${totalRet[c.key]} retirés</span>`:''}
+        </div></div>`;
+    });
+    html+='</div>';
+  }
+
+  // Déchets collectés
+  if(Object.keys(naturesCount).length){
+    html+=`<div class="param-block"><div class="param-title"><i class="ti ti-recycle" style="color:var(--orange)"></i> Déchets collectés</div>`;
+    Object.entries(naturesCount).sort((a,b)=>b[1]-a[1]).forEach(([n,q])=>{
+      html+=`<div class="param-row"><div class="param-lbl">${n}</div><span style="font-size:13px;font-weight:600;color:var(--orange)">${q} contenant${q>1?'s':''}</span></div>`;
+    });
+    html+='</div>';
+  }
+
+  // Par client
+  const clientsSorted=Object.values(parClient).sort((a,b)=>b.nb-a.nb);
+  html+=`<div class="param-block"><div class="param-title"><i class="ti ti-users" style="color:var(--blue)"></i> Par client (${clientsSorted.length})</div>`;
+  clientsSorted.forEach(c=>{
+    html+=`<div class="param-row">
+      <div><div class="param-lbl" style="font-size:13px;font-weight:600">${c.nom}</div>
+      <div style="font-size:11px;color:var(--gray-400);margin-top:2px">
+        ${c.depot>0?`<span style="color:var(--green)">${c.depot} dépôt${c.depot>1?'s':''}</span> `:''}
+        ${c.echange>0?`<span style="color:var(--blue)">${c.echange} échange${c.echange>1?'s':''}</span> `:''}
+        ${c.enlevement>0?`<span style="color:var(--orange)">${c.enlevement} enlèvement${c.enlevement>1?'s':''}</span> `:''}
+        ${c.bsd>0?`<span style="color:var(--teal)">${c.bsd} BSD</span>`:''}
+      </div></div>
+      <span style="font-size:14px;font-weight:700;color:var(--blue)">${c.nb}</span>
+    </div>`;
+  });
+  html+='</div>';
+
+  // Par chantier
+  const chantiersSorted=Object.values(parChantier).sort((a,b)=>b.nb-a.nb);
+  html+=`<div class="param-block"><div class="param-title"><i class="ti ti-map-2" style="color:var(--purple)"></i> Par chantier (${chantiersSorted.length})</div>`;
+  chantiersSorted.forEach(ch=>{
+    html+=`<div class="param-row">
+      <div><div class="param-lbl" style="font-size:12px;font-weight:600">${ch.nom}</div>
+      <div style="font-size:11px;color:var(--gray-400);margin-top:1px">${ch.clientNom} · dernière : ${fmtDate(ch.derniere)}</div>
+      <div style="font-size:11px;margin-top:2px">
+        ${ch.depot>0?`<span style="color:var(--green)">${ch.depot}D</span> `:''}
+        ${ch.echange>0?`<span style="color:var(--blue)">${ch.echange}E</span> `:''}
+        ${ch.enlevement>0?`<span style="color:var(--orange)">${ch.enlevement}N</span>`:''}
+      </div></div>
+      <span style="font-size:14px;font-weight:700;color:var(--purple)">${ch.nb}</span>
+    </div>`;
+  });
+  html+='</div>';
+
+  el.innerHTML=html;
+}
+
+function exportAnalysesCSV(){
+  const intervs=getFilteredIntervs();
+  if(!intervs.length){showToast('Aucune donnée à exporter');return;}
+  const headers=['Date','Client','Chantier','Type',
+    ...CONTENANTS.map(c=>'Dépôt '+c.label),
+    ...CONTENANTS.map(c=>'Retrait '+c.label),
+    ...CONTENANTS.map(c=>'Stock final '+c.label),
+    'BSD Type','N° BSD','Nature déchet','CAP','Note'];
+  const rows=[headers];
+  [...intervs].sort((a,b)=>String(b.date).localeCompare(String(a.date))).forEach(h=>{
+    // Déchets collectés - une ligne par déchet si plusieurs
+    const dechets=h.dechetsCollectes&&h.dechetsCollectes.length?h.dechetsCollectes:[{bsdType:h.bsdType||'',bsdNum:h.bsdNum||'',nature:h.bsdDechet||'',cap:'',quantite:''}];
+    dechets.forEach((d,idx)=>{
+      rows.push([
+        idx===0?h.date:'',
+        idx===0?h.clientNom:'',
+        idx===0?h.chantierNom:'',
+        idx===0?(TYPE_LABELS[h.type]||h.type):'',
+        ...CONTENANTS.map(c=>idx===0?(h.depot?h.depot[c.key]||0:0):''),
+        ...CONTENANTS.map(c=>idx===0?(h.retrait?h.retrait[c.key]||0:0):''),
+        ...CONTENANTS.map(c=>idx===0?(h.stockApres?h.stockApres[c.key]||0:0):''),
+        d.bsdType||'',d.bsdNum||'',
+        d.nature==='Autre (préciser)'?d.natureAutre||'':d.nature||'',
+        d.cap||'',
+        idx===0?(h.note||''):''
+      ]);
+    });
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  const debut=document.getElementById('an-debut').value;
+  const fin=document.getElementById('an-fin').value;
+  a.download=`RESODE_Analyses_${debut}_${fin}.csv`;a.click();
+  showToast('✓ Export CSV téléchargé');
+}
 
 function printPDF(){
   const pdfContent=document.getElementById('pdf-content').innerHTML;
