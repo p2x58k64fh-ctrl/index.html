@@ -2278,16 +2278,16 @@ setInterval(loadFromCloud,120000);
 
 // ─── ANALYSES ────────────────────────────────────────────
 function initAnalyses(){
-  // Remplir le select clients
   const selC=document.getElementById('an-client');
-  const selCh=document.getElementById('an-chantier');
   const curC=selC.value;
   selC.innerHTML='<option value="">Tous les clients</option>';
   [...state.clients].sort((a,b)=>a.nom.localeCompare(b.nom,'fr')).forEach(c=>{
-    selC.innerHTML+=`<option value="${c.id}">${c.nom}</option>`;
+    const opt=document.createElement('option');
+    opt.value=c.id;opt.textContent=c.nom;selC.appendChild(opt);
   });
   selC.value=curC;
-  // Dates par défaut : année en cours
+  selC.onchange=function(){updateChantiersSelect();renderAnalyses();};
+  updateChantiersSelect();
   const now=new Date();
   if(!document.getElementById('an-debut').value){
     document.getElementById('an-debut').value=new Date(now.getFullYear(),0,1).toISOString().split('T')[0];
@@ -2295,7 +2295,6 @@ function initAnalyses(){
   }
   renderAnalyses();
 }
-
 function resetFiltresAnalyses(){
   document.getElementById('an-client').value='';
   document.getElementById('an-chantier').value='';
