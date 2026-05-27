@@ -688,7 +688,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <h2 class="no-print">Bon d'intervention</h2>
     <div id="pdf-content" class="pdf-preview"></div>
     <div class="no-print" style="display:flex;gap:8px;margin-top:10px">
-      <button class="btn-submit" onclick="window.print()" style="flex:1"><i class="ti ti-printer"></i> Imprimer / PDF</button>
+      <button class="btn-submit" onclick="printPDF()" style="flex:1"><i class="ti ti-printer"></i> Imprimer / PDF</button>
       <button class="btn-secondary" onclick="closeModal('modal-pdf')" style="margin-top:0;flex:1">Fermer</button>
     </div>
   </div>
@@ -2175,6 +2175,39 @@ function allerFiche(chantierId){
 document.getElementById('header-logo').src='data:image/png;base64,'+LOGO_B64;
 loadFromCloud();
 setInterval(loadFromCloud,120000);
+
+function printPDF(){
+  const content=document.getElementById('pdf-content').innerHTML;
+  const w=window.open('','_blank','width=800,height=900');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Bon RESODE</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;color:#1a1a1a;padding:15mm}
+    @page{margin:10mm;size:A4}
+    @media print{body{padding:0}}
+    .pdf-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #2E7D32}
+    .pdf-logo{max-width:120px;height:auto}
+    .pdf-company{text-align:right;font-size:10px;color:#555}
+    .pdf-company strong{display:block;font-size:12px;color:#1a1a1a;margin-bottom:2px}
+    .pdf-title{background:#2E7D32;color:#fff;text-align:center;padding:6px;border-radius:4px;font-size:13px;font-weight:700;margin-bottom:10px}
+    .pdf-section{margin-bottom:8px}
+    .pdf-section-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;border-bottom:1px solid #eee;padding-bottom:3px;margin-bottom:5px}
+    .pdf-row{display:flex;gap:8px;margin-bottom:2px}
+    .pdf-lbl{font-weight:600;min-width:100px;color:#666;font-size:10px;flex-shrink:0}
+    .pdf-val{flex:1;font-size:10px}
+    .pdf-contenants{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:5px}
+    .pdf-contenant{background:#f8f9f8;border:1px solid #ddd;border-radius:4px;padding:5px;text-align:center}
+    .pdf-contenant-qty{font-size:15px;font-weight:700;color:#2E7D32}
+    .pdf-contenant-lbl{font-size:9px;color:#666}
+    .pdf-sig-area{border:1px solid #ddd;border-radius:4px;min-height:55px;padding:8px;background:#fafafa;display:flex;align-items:center;justify-content:center}
+    .pdf-footer{margin-top:10px;padding-top:6px;border-top:1px solid #eee;text-align:center;font-size:9px;color:#aaa}
+    img{max-width:100%}
+  </style>
+  </head><body>${content}</body></html>\`);
+  w.document.close();
+  setTimeout(()=>{w.focus();w.print();},500);
+}
 </script>
 </body>
 </html>
