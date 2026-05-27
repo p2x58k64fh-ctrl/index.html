@@ -2317,9 +2317,7 @@ function updateChantiersSelect(){
   sel.value='';
 }
 
-document.getElementById('an-client').addEventListener('change',function(){
-  updateChantiersSelect();renderAnalyses();
-});
+// listener géré dans initAnalyses
 
 function getFilteredIntervs(){
   const clientId=parseInt(document.getElementById('an-client').value)||null;
