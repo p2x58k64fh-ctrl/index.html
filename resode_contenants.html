@@ -421,6 +421,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button onclick="filtreCarteStatut('vieilli')" id="fc-vieilli" class="fc-btn" style="border-color:#D97706;color:#D97706">⏰ En retard</button>
         <button onclick="filtreCarteStatut('planifie')" id="fc-planifie" class="fc-btn" style="border-color:var(--purple);color:var(--purple)">📅 Planifié</button>
         <button onclick="filtreCarteStatut('ok')" id="fc-ok" class="fc-btn" style="border-color:var(--green);color:var(--green)">✓ En place</button>
+        <button onclick="filtreCarteStatut('acollectersc')" id="fc-acollectersc" class="fc-btn" style="border-color:#B45309;color:#B45309">🚛 À collecter</button>
         <button onclick="filtreCarteStatut('cloture')" id="fc-cloture" class="fc-btn" style="border-color:var(--gray-400);color:var(--gray-400)">⬜ Clôturés</button>
       </div>
       <div id="carte-map" style="width:100%;height:calc(100vh - 260px);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)"></div>
@@ -2106,11 +2107,11 @@ function renderCarte(){
     const client=state.clients.find(c=>c.id===ch.clientId);
 
     // Couleur selon statut
-    const colors={alerte:'#DC2626',vieilli:'#D97706',planifie:'#7C3AED',ok:'#16A34A',vide:'#6B7280',cloture:'#9CA3AF',alivrer:'#7C3AED'};
+    const colors={alerte:'#DC2626',vieilli:'#D97706',planifie:'#7C3AED',ok:'#16A34A',vide:'#6B7280',cloture:'#9CA3AF',alivrer:'#7C3AED',acollectersc:'#B45309'};
     const color=ch.cloture?colors.cloture:colors[s]||colors.ok;
 
     // Emojis des contenants
-    const emojis=ch.aLivrer?'📦':(CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>ct.emoji).join('')||'📍');
+    const emojis=ch.aCollecterSansContenant?'🚛':ch.aLivrer?'📦':(CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>ct.emoji).join('')||'📍');
 
     // Icône personnalisée
     const iconHtml=`<div style="
@@ -2136,7 +2137,7 @@ function renderCarte(){
 
     // Contenu du popup
     const stockLines=CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>`<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f0f0f0"><span>${ct.emoji} ${ct.label}</span><strong>${ch[ct.key]}</strong></div>`).join('');
-    const statutLabel={alerte:'⚠ À collecter',vieilli:'⏰ En retard',planifie:'📅 Planifié',ok:'✓ En place',vide:'Vide'}[s]||s;
+    const statutLabel={alerte:'⚠ À collecter',vieilli:'⏰ En retard',planifie:'📅 Planifié',ok:'✓ En place',vide:'Vide',acollectersc:'🚛 À collecter',alivrer:'📦 À livrer'}[s]||s;
     const adresse=[ch.rue,[ch.codePostal,ch.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
 
     const popupHtml=`
