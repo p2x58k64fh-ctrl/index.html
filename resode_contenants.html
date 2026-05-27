@@ -446,39 +446,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <!-- PARAMS -->
     <div id="tab-analyses" class="section">
       <div id="analyses-content">
-        <!-- Filtres -->
         <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px;box-shadow:var(--shadow)">
           <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-filter" style="color:var(--blue)"></i> Filtres</div>
-          <div class="field-row" style="margin-bottom:8px">
-            <div class="field" style="margin-bottom:0"><label>Client</label>
-              <select id="an-client" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">
-                <option value="">Tous les clients</option>
-              </select>
-            </div>
-            <div class="field" style="margin-bottom:0"><label>Chantier</label>
-              <select id="an-chantier" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">
-                <option value="">Tous les chantiers</option>
-              </select>
-            </div>
-          </div>
-          <div class="field-row" style="margin-bottom:8px">
-            <div class="field" style="margin-bottom:0"><label>Du</label><input type="date" id="an-debut" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit"></div>
-            <div class="field" style="margin-bottom:0"><label>Au</label><input type="date" id="an-fin" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit"></div>
-          </div>
-          <div class="field" style="margin-bottom:8px"><label>Type d'intervention</label>
-            <select id="an-type" onchange="renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">
-              <option value="">Tous les types</option>
-              <option value="depot">Dépôts</option>
-              <option value="echange">Échanges</option>
-              <option value="enlevement">Enlèvements</option>
-            </select>
-          </div>
-          <div style="display:flex;gap:8px">
+          <div id="an-filtres-html"></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
             <button onclick="resetFiltresAnalyses()" style="flex:1;padding:9px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:var(--gray-600)"><i class="ti ti-refresh"></i> Réinitialiser</button>
             <button onclick="exportAnalysesCSV()" style="flex:1;padding:9px;border:none;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit"><i class="ti ti-table-export"></i> Export CSV</button>
           </div>
         </div>
-        <!-- Résultats -->
         <div id="an-resultats"></div>
       </div>
     </div>
@@ -2279,52 +2254,74 @@ setInterval(loadFromCloud,120000);
 
 // ─── ANALYSES ────────────────────────────────────────────
 function initAnalyses(){
-  const selC=document.getElementById('an-client');
-  const curC=selC.value;
-  selC.innerHTML='<option value="">Tous les clients</option>';
-  [...state.clients].sort((a,b)=>a.nom.localeCompare(b.nom,'fr')).forEach(c=>{
-    const opt=document.createElement('option');
-    opt.value=c.id;opt.textContent=c.nom;selC.appendChild(opt);
-  });
-  selC.value=curC;
-  selC.onchange=function(){updateChantiersSelect();renderAnalyses();};
-  updateChantiersSelect();
   const now=new Date();
-  if(!document.getElementById('an-debut').value){
-    document.getElementById('an-debut').value=new Date(now.getFullYear(),0,1).toISOString().split('T')[0];
-    document.getElementById('an-fin').value=today();
-  }
-  renderAnalyses();
-}
-function resetFiltresAnalyses(){
-  document.getElementById('an-client').value='';
-  document.getElementById('an-chantier').value='';
-  document.getElementById('an-type').value='';
-  const now=new Date();
-  document.getElementById('an-debut').value=new Date(now.getFullYear(),0,1).toISOString().split('T')[0];
-  document.getElementById('an-fin').value=today();
-  updateChantiersSelect();
+  // Générer les filtres entièrement en JS
+  const clientOptions=['<option value="">Tous les clients</option>',
+    ...[...state.clients].sort((a,b)=>a.nom.localeCompare(b.nom,'fr')).map(c=>`<option value="${c.id}">${c.nom}</option>`)
+  ].join('');
+  
+  const anDebut=window._anDebut||new Date(now.getFullYear(),0,1).toISOString().split('T')[0];
+  const anFin=window._anFin||today();
+  const anClient=window._anClient||'';
+  const anChantier=window._anChantier||'';
+  const anType=window._anType||'';
+  
+  const chantierOptions=['<option value="">Tous les chantiers</option>',
+    ...state.chantiers
+      .filter(ch=>!anClient||ch.clientId===parseInt(anClient))
+      .sort((a,b)=>a.nom.localeCompare(b.nom,'fr'))
+      .map(ch=>`<option value="${ch.id}">${ch.nom}</option>`)
+  ].join('');
+
+  document.getElementById('an-filtres-html').innerHTML=`
+    <div class="field-row" style="margin-bottom:8px">
+      <div class="field" style="margin-bottom:0"><label>Client</label>
+        <select onchange="window._anClient=this.value;initAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">${clientOptions}</select>
+      </div>
+      <div class="field" style="margin-bottom:0"><label>Chantier</label>
+        <select onchange="window._anChantier=this.value;renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">${chantierOptions}</select>
+      </div>
+    </div>
+    <div class="field-row" style="margin-bottom:8px">
+      <div class="field" style="margin-bottom:0"><label>Du</label><input type="date" value="${anDebut}" onchange="window._anDebut=this.value;renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit"></div>
+      <div class="field" style="margin-bottom:0"><label>Au</label><input type="date" value="${anFin}" onchange="window._anFin=this.value;renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit"></div>
+    </div>
+    <div class="field" style="margin-bottom:0"><label>Type</label>
+      <select onchange="window._anType=this.value;renderAnalyses()" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit">
+        <option value="" ${anType===''?'selected':''}>Tous les types</option>
+        <option value="depot" ${anType==='depot'?'selected':''}>Dépôts</option>
+        <option value="echange" ${anType==='echange'?'selected':''}>Échanges</option>
+        <option value="enlevement" ${anType==='enlevement'?'selected':''}>Enlèvements</option>
+      </select>
+    </div>`;
+  
+  // Restaurer les valeurs sélectionnées
+  const selects=document.getElementById('an-filtres-html').querySelectorAll('select');
+  if(selects[0])selects[0].value=anClient;
+  if(selects[1])selects[1].value=anChantier;
+  if(selects[2])selects[2].value=anType;
+  
   renderAnalyses();
 }
 
-function updateChantiersSelect(){
-  const clientId=parseInt(document.getElementById('an-client').value)||null;
-  const sel=document.getElementById('an-chantier');
-  sel.innerHTML='<option value="">Tous les chantiers</option>';
-  state.chantiers.filter(ch=>!clientId||ch.clientId===clientId)
-    .sort((a,b)=>a.nom.localeCompare(b.nom,'fr'))
-    .forEach(ch=>{sel.innerHTML+=`<option value="${ch.id}">${ch.nom}</option>`;});
-  sel.value='';
+function resetFiltresAnalyses(){
+  const now=new Date();
+  window._anClient='';window._anChantier='';window._anType='';
+  window._anDebut=new Date(now.getFullYear(),0,1).toISOString().split('T')[0];
+  window._anFin=today();
+  initAnalyses();
 }
+
+function updateChantiersSelect(){initAnalyses();}
 
 // listener géré dans initAnalyses
 
 function getFilteredIntervs(){
-  const clientId=parseInt(document.getElementById('an-client').value)||null;
-  const chantierId=parseInt(document.getElementById('an-chantier').value)||null;
-  const type=document.getElementById('an-type').value;
-  const debut=document.getElementById('an-debut').value;
-  const fin=document.getElementById('an-fin').value;
+  const clientId=parseInt(window._anClient)||null;
+  const chantierId=parseInt(window._anChantier)||null;
+  const type=window._anType||'';
+  const debut=window._anDebut||'';
+  const fin=window._anFin||today();
   return state.interventions.filter(i=>{
     if(clientId&&i.clientId!==clientId)return false;
     if(chantierId&&i.chantierId!==chantierId)return false;
@@ -2491,8 +2488,8 @@ function exportAnalysesCSV(){
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  const debut=document.getElementById('an-debut').value;
-  const fin=document.getElementById('an-fin').value;
+  const debut=window._anDebut||'';
+  const fin=window._anFin||today();
   a.download=`RESODE_Analyses_${debut}_${fin}.csv`;a.click();
   showToast('✓ Export CSV téléchargé');
 }
