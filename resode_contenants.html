@@ -1013,6 +1013,7 @@ function renderAll(){
   if(currentTab==='clients'){if(currentClientId)renderChantiers();else renderClients();}
   if(currentTab==='historique')renderHistorique();
   if(currentTab==='carte'&&leafletLoaded)renderCarte();
+  if(currentTab==='analyses')initAnalyses();
   if(currentTab==='params')document.getElementById('p-delai').value=getDelai();
 }
 
