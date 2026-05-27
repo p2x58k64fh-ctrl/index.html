@@ -311,7 +311,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .section{display:none}.section.active{display:block}
 
 @media(min-width:480px){.modal,.menu-sheet{border-radius:var(--radius-lg);margin:auto}.modal-overlay,.menu-overlay{align-items:center}}
-@media print{body{background:#fff}.no-print{display:none!important}.pdf-preview{border:none;padding:0}}
+@media print{
+  @page{margin:8mm;size:A4}
+  body{background:#fff}
+  .no-print{display:none!important}
+  .pdf-preview{border:none;padding:0;font-size:10px}
+  .modal{border-radius:0;max-height:none;overflow:visible;padding:0}
+  .modal-overlay{position:static;background:none;display:block}
+  .pdf-header{margin-bottom:8px;padding-bottom:6px}
+  .pdf-logo{max-width:100px}
+  .pdf-company{font-size:9px}
+  .pdf-title{padding:4px;font-size:11px;margin-bottom:8px}
+  .pdf-section{margin-bottom:6px}
+  .pdf-section-title{font-size:8px;padding-bottom:2px;margin-bottom:3px}
+  .pdf-row{margin-bottom:1px}
+  .pdf-lbl{font-size:9px;min-width:80px}
+  .pdf-val{font-size:9px}
+  .pdf-contenants{grid-template-columns:repeat(4,1fr);gap:3px;margin-top:3px}
+  .pdf-contenant{padding:3px}
+  .pdf-contenant-qty{font-size:12px}
+  .pdf-contenant-lbl{font-size:8px}
+  .pdf-sig-area{min-height:40px;padding:6px}
+  .pdf-footer{margin-top:6px;padding-top:4px;font-size:8px}
+}
 </style>
 </head>
 <body>
@@ -1761,31 +1783,40 @@ function generatePDF(hId){
   const sigHtml=h.signature?`<img src="${h.signature}" style="max-height:60px;max-width:100%">`:' ';
   const photoHtml=h.photo?`<div class="pdf-section"><div class="pdf-section-title">Photo</div><img src="${h.photo}" style="width:100%;max-height:140px;object-fit:cover;border-radius:4px;border:1px solid var(--border)"></div>`:'';
   document.getElementById('pdf-content').innerHTML=`
-    <div class="pdf-header"><img class="pdf-logo" src="data:image/png;base64,${LOGO_B64}" alt="RESODE"><div class="pdf-company"><strong>Sté RESODE</strong>4 rue André Marie Ampère<br>59236 Frelinghien<br>06 26 82 48 08 · www.resode.fr</div></div>
-    <div class="pdf-title">BON D'INTERVENTION — ${(TYPE_LABELS[h.type]||h.type).toUpperCase()}</div>
-    <div class="pdf-section"><div class="pdf-section-title">Référence</div>
-      <div class="pdf-row"><span class="pdf-lbl">N° bon</span><span class="pdf-val" style="font-weight:700;font-family:monospace">${bonNum}</span></div>
-      <div class="pdf-row"><span class="pdf-lbl">Date</span><span class="pdf-val">${fmtDateLong(h.date)}</span></div>
-      <div class="pdf-row"><span class="pdf-lbl">Type</span><span class="pdf-val">${TYPE_LABELS[h.type]||h.type}</span></div>
+    <div class="pdf-header" style="margin-bottom:6px;padding-bottom:6px">
+      <img class="pdf-logo" src="data:image/png;base64,${LOGO_B64}" alt="RESODE" style="max-width:110px">
+      <div class="pdf-company" style="font-size:10px;text-align:right"><strong style="font-size:12px">Sté RESODE</strong><br>4 rue André Marie Ampère, 59236 Frelinghien<br>06 26 82 48 08 · www.resode.fr</div>
     </div>
-    <div class="pdf-section"><div class="pdf-section-title">Client / Chantier</div>
-      <div class="pdf-row"><span class="pdf-lbl">Donneur d'ordre</span><span class="pdf-val" style="font-weight:600">${h.clientNom}</span></div>
-      <div class="pdf-row"><span class="pdf-lbl">Chantier</span><span class="pdf-val" style="font-weight:600">${h.chantierNom}</span></div>
-      ${adresse?`<div class="pdf-row"><span class="pdf-lbl">Adresse</span><span class="pdf-val">${adresse}</span></div>`:''}
-      ${ch?.complement?`<div class="pdf-row"><span class="pdf-lbl">Complément</span><span class="pdf-val">${ch.complement}</span></div>`:''}
-      ${ch?.contactNom?`<div class="pdf-row"><span class="pdf-lbl">Contact chantier</span><span class="pdf-val">${ch.contactNom}${ch.contactRole?' · '+ch.contactRole:''}</span></div>`:''}
-      ${ch?.contactTel?`<div class="pdf-row"><span class="pdf-lbl">Tél. contact</span><span class="pdf-val">${ch.contactTel}</span></div>`:''}
+    <div class="pdf-title" style="padding:5px;font-size:12px;margin-bottom:8px">BON D'INTERVENTION — ${(TYPE_LABELS[h.type]||h.type).toUpperCase()} &nbsp;|&nbsp; <span style="font-family:monospace;font-weight:400;font-size:10px">${bonNum}</span> &nbsp;|&nbsp; ${fmtDateLong(h.date)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div class="pdf-section" style="margin-bottom:0">
+        <div class="pdf-section-title">Client / Chantier</div>
+        <div class="pdf-row"><span class="pdf-lbl">Client</span><span class="pdf-val" style="font-weight:600">${h.clientNom}</span></div>
+        <div class="pdf-row"><span class="pdf-lbl">Chantier</span><span class="pdf-val" style="font-weight:600">${h.chantierNom}</span></div>
+        ${adresse?`<div class="pdf-row"><span class="pdf-lbl">Adresse</span><span class="pdf-val">${adresse}</span></div>`:''}
+        ${ch?.contactNom?`<div class="pdf-row"><span class="pdf-lbl">Contact</span><span class="pdf-val">${ch.contactNom}${ch.contactRole?' · '+ch.contactRole:''}${ch.contactTel?' · '+ch.contactTel:''}</span></div>`:''}
+      </div>
+      <div class="pdf-section" style="margin-bottom:0">
+        <div class="pdf-section-title">Intervention</div>
+        <div class="pdf-row"><span class="pdf-lbl">Type</span><span class="pdf-val">${TYPE_LABELS[h.type]||h.type}</span></div>
+        <div class="pdf-row"><span class="pdf-lbl">Date</span><span class="pdf-val">${fmtDateLong(h.date)}</span></div>
+        ${h.note?`<div class="pdf-row"><span class="pdf-lbl">Note</span><span class="pdf-val">${h.note}</span></div>`:''}
+      </div>
     </div>
     <div class="pdf-section"><div class="pdf-section-title">Contenants</div>${contenantsHtml}</div>
     ${(()=>{const bsds=h.bsds&&h.bsds.length?h.bsds:h.bsdNum?[{type:h.bsdType||'BSD',num:h.bsdNum,dechet:h.bsdDechet||'',cap:''}]:[];return bsds.length?`<div class="pdf-section"><div class="pdf-section-title">Bordereau${bsds.length>1?'x':''}</div>${bsds.map(b=>`<div style="margin-bottom:8px;padding:6px;background:var(--teal-light);border-radius:4px"><div class="pdf-row"><span class="pdf-lbl">Type</span><span class="pdf-val">${b.type||'BSD'}</span></div><div class="pdf-row"><span class="pdf-lbl">Numéro</span><span class="pdf-val" style="font-family:monospace;font-weight:700">${b.num}</span></div>${b.dechet?`<div class="pdf-row"><span class="pdf-lbl">Déchet</span><span class="pdf-val">${b.dechet}</span></div>`:''}${b.cap?`<div class="pdf-row"><span class="pdf-lbl">CAP</span><span class="pdf-val" style="font-family:monospace">${b.cap}</span></div>`:''}</div>`).join('')}</div>`:'';})()} 
     ${h.note?`<div class="pdf-section"><div class="pdf-section-title">Observations</div><p style="font-size:12px">${h.note}</p></div>`:''}
     ${(()=>{const dc=h.dechetsCollectes||[];return dc.length?`<div class="pdf-section"><div class="pdf-section-title">Déchets collectés</div>${dc.map(d=>`<div style="padding:5px 0;border-bottom:1px solid var(--gray-100)"><div class="pdf-row"><span class="pdf-lbl">Contenant</span><span class="pdf-val">${CONTENANTS.find(c=>c.key===d.contenant)?.emoji||''} ${d.quantite} × ${CONTENANTS.find(c=>c.key===d.contenant)?.label||d.contenant}</span></div><div class="pdf-row"><span class="pdf-lbl">Nature</span><span class="pdf-val">${d.nature==='Autre (préciser)'?d.natureAutre:d.nature}</span></div>${d.cap?`<div class="pdf-row"><span class="pdf-lbl">CAP</span><span class="pdf-val" style="font-family:monospace">${d.cap}</span></div>`:''} ${d.bsdNum?`<div class="pdf-row"><span class="pdf-lbl">${d.bsdType||'BSD'}</span><span class="pdf-val" style="font-family:monospace">${d.bsdNum}</span></div>`:''}</div>`).join('')}</div>`:'';})()}
     ${photoHtml}
-    <div class="pdf-section"><div class="pdf-section-title">Signature du responsable site</div>
-      <div class="pdf-sig-area">${sigHtml}</div>
-      <div style="font-size:10px;color:var(--gray-400);margin-top:4px">Bon pour accord — ${ch?.contactNom||'Responsable site'}</div>
-    </div>
-    <div class="pdf-footer">Sté RESODE — Recyclage et solutions en déchets<br>4 rue André Marie Ampère, 59236 Frelinghien — 06 26 82 48 08 — www.resode.fr<br>Document généré le ${fmtDateLong(today())}</div>`;
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+      <div class="pdf-section" style="margin-bottom:0"><div class="pdf-section-title">Signature du responsable site</div>
+        <div class="pdf-sig-area" style="min-height:45px">${sigHtml}</div>
+        <div style="font-size:9px;color:var(--gray-400);margin-top:2px">Bon pour accord — ${ch?.contactNom||'Responsable site'}</div>
+      </div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:4px">
+        <div style="font-size:8px;color:var(--gray-400);line-height:1.5">Sté RESODE — Recyclage et solutions en déchets<br>4 rue André Marie Ampère, 59236 Frelinghien<br>06 26 82 48 08 · www.resode.fr<br>Document généré le ${fmtDateLong(today())}</div>
+      </div>
+    </div>`;
   closeModal('modal-detail');
   document.getElementById('modal-pdf').classList.add('open');
 }
