@@ -13,7 +13,7 @@
   --red:#A32D2D;--red-light:#FCEBEB;
   --orange:#C2410C;--orange-light:#FFF7ED;--orange-border:#FED7AA;
   --purple:#4F46E5;--purple-light:#EEF2FF;--purple-border:#C7D2FE;--purple-text:#3730A3;
-  --teal:#0D7490;--teal-light:#ECFEFF;--teal-border:#A5F3FC;--teal-text:#164E63;
+  --teal:#0D7490;--teal-light:#ECFEFF;--teal-border:#A5F3FC;--teal-text:#164E63;--collect:#B45309;--collect-light:#FEF3C7;--collect-border:#FDE68A;--collect-text:#92400E;
   --pink:#BE185D;--pink-light:#FDF2F8;--pink-border:#F9A8D4;
   --tag-benne-bg:#F3E8FF;--tag-benne-txt:#6B21A8;
   --tag-bigbag-bg:#FEF9C3;--tag-bigbag-txt:#854D0E;
@@ -86,6 +86,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge.vide{background:var(--gray-100);color:var(--gray-600)}
 .badge.vieilli{background:#FFF3CD;color:#856404;border:1px solid #FFC107}
 .badge.alivrer{background:var(--purple-light);color:var(--purple-text);border:1px solid var(--purple-border)}
+.badge.acollectersc{background:var(--collect-light);color:var(--collect-text);border:1px solid var(--collect-border)}
+.chantier-card.acollectersc{border-left:4px solid var(--collect)}
 .chantier-card.alivrer{border-left:4px solid var(--purple)}
 .badge.planifie{background:var(--purple-light);color:var(--purple-text)}
 .vieill-days{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#856404;background:#FFF3CD;border:1px solid #FFC107;border-radius:20px;padding:2px 7px;margin-left:4px}
@@ -528,6 +530,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </div>
       </div>
     </div>
+    <!-- À COLLECTER SANS CONTENANT -->
+    <div style="border-top:1px solid var(--gray-100);padding-top:14px;margin-top:4px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <input type="checkbox" id="ch-a-collecter-sc" onchange="toggleACollecterSC()" style="width:18px;height:18px;cursor:pointer">
+        <label for="ch-a-collecter-sc" style="font-size:14px;font-weight:600;color:var(--collect-text);cursor:pointer">🚛 Marquer comme "À collecter"</label>
+      </div>
+      <div id="ch-a-collecter-sc-zone" style="display:none">
+        <div style="background:var(--collect-light);border:1px solid var(--collect-border);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px">
+          <div class="field" style="margin-bottom:0"><label style="color:var(--collect-text)">Description de ce qu'il faut collecter</label><input id="ch-collecter-note" placeholder="Ex: Copieur HS, cartons, déchets en vrac…" style="border-color:var(--collect-border)"></div>
+        </div>
+      </div>
+    </div>
     <button class="btn-submit" onclick="saveChantier()"><i class="ti ti-check"></i> Enregistrer le chantier</button>
     <button class="btn-secondary" onclick="closeModal('modal-chantier')">Annuler</button>
   </div>
@@ -894,6 +908,7 @@ function totalStock(s){return CONTENANTS.reduce((t,c)=>t+(s?s[c.key]||0:0),0);}
 function getChantierStatus(ch){
   const hasC=CONTENANTS.some(ct=>ch[ct.key]>0);
   if(ch.cloture)return 'cloture';
+  if(ch.aCollecterSansContenant)return 'acollectersc';
   if(ch.aLivrer)return 'alivrer';
   if(!hasC)return 'vide';
   if(ch.alerte)return 'alerte';
@@ -968,6 +983,12 @@ function renderDashboard(){
   const planifies=state.chantiers.filter(ch=>ch.prochaineCollecte&&!ch.cloture).sort((a,b)=>String(a.prochaineCollecte).localeCompare(String(b.prochaineCollecte)));
   let html='';
 
+  const aCollecterSCList=state.chantiers.filter(ch=>ch.aCollecterSansContenant&&!ch.cloture);
+  if(aCollecterSCList.length){
+    html+=`<div class="dashboard-section"><div class="dashboard-title"><i class="ti ti-truck-loading" style="color:var(--collect)"></i> À collecter (${aCollecterSCList.length})</div><div class="alert-card">`;
+    html+=aCollecterSCList.map(ch=>{const client=state.clients.find(c=>c.id===ch.clientId);return `<div class="alert-item" onclick="goToChantierDirect(${ch.id})"><div class="alert-dot" style="background:var(--collect)"></div><div class="alert-main"><div class="alert-nom">${ch.nom}</div><div class="alert-sub">${client?client.nom:'?'}${ch.aCollecterNote?' · '+ch.aCollecterNote:''}</div></div><div class="alert-right" style="color:var(--collect)">🚛</div></div>`;}).join('');
+    html+='</div></div>';
+  }
   const aLivrerList=state.chantiers.filter(ch=>ch.aLivrer&&!ch.cloture);
   if(aLivrerList.length){
     html+=`<div class="dashboard-section"><div class="dashboard-title"><i class="ti ti-package" style="color:var(--purple)"></i> À livrer (${aLivrerList.length})</div><div class="alert-card">`;
@@ -1165,7 +1186,7 @@ function renderChantiers(){
   let html=nbAl>0?`<div class="alerte-banner"><i class="ti ti-alert-triangle"></i> ${nbAl} chantier${nbAl>1?'s':''} à collecter</div>`:'';
   html+=list.map(ch=>{
     const s=getChantierStatus(ch);
-    const bt={alerte:'⚠ À collecter',vieilli:'⏰ En retard',ok:'✓ En place',cloture:'Clôturé',vide:'Vide',planifie:'📅 Planifié',alivrer:'📦 À livrer'}[s]||s;
+    const bt={alerte:'⚠ À collecter',vieilli:'⏰ En retard',ok:'✓ En place',cloture:'Clôturé',vide:'Vide',planifie:'📅 Planifié',alivrer:'📦 À livrer',acollectersc:'🚛 À collecter'}[s]||s;
     const tags=CONTENANTS.filter(ct=>ch[ct.key]>0).map(ct=>`<span class="tag ${ct.cls}">${ct.emoji} ${ch[ct.key]} ${ct.label}</span>`).join('');
     const noTag=!tags&&s!=='cloture'?`<span class="tag none">Aucun contenant</span>`:'';
     const adresse=[ch.rue,[ch.codePostal,ch.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
@@ -1176,6 +1197,7 @@ function renderChantiers(){
     const planifBadge=ch.prochaineCollecte&&!ch.cloture?`<div class="planif-badge"><i class="ti ti-calendar" style="font-size:11px"></i> Collecte prévue : ${fmtDate(ch.prochaineCollecte)}</div>`:'';
     const contactLine=ch.contactNom?`<div class="chantier-contact"><i class="ti ti-user" style="font-size:13px"></i> ${ch.contactNom}${ch.contactRole?' · '+ch.contactRole:''}${ch.contactTel?` · <a href="tel:${ch.contactTel.replace(/\s/g,'')}" style="color:var(--blue);text-decoration:none">${ch.contactTel}</a>`:''}</div>`:'';
     const aLivrerBadge=ch.aLivrer?`<div style="background:var(--purple-light);border:1px solid var(--purple-border);border-radius:var(--radius-sm);padding:6px 12px;margin:0 14px 8px;font-size:12px;color:var(--purple-text)"><i class="ti ti-package" style="font-size:12px"></i> <strong>À livrer :</strong> ${CONTENANTS.filter(c=>ch.aLivrerQtys&&ch.aLivrerQtys[c.key]>0).map(c=>`${ch.aLivrerQtys[c.key]} ${c.label}`).join(', ')||'voir note'}${ch.aLivrerNote?' — '+ch.aLivrerNote:''}</div>`:'';
+const aCollecterBadge=ch.aCollecterSansContenant?`<div style="background:var(--collect-light);border:1px solid var(--collect-border);border-radius:var(--radius-sm);padding:6px 12px;margin:0 14px 8px;font-size:12px;color:var(--collect-text)"><i class="ti ti-truck-loading" style="font-size:12px"></i> <strong>À collecter :</strong> ${ch.aCollecterNote||'voir note'}</div>`:'';
     const pleinBtn=s!=='vide'&&s!=='cloture'?`<button class="chantier-btn ${ch.alerte?'green':'amber'}" onclick="toggleAlerte(${ch.id})"><i class="ti ti-${ch.alerte?'check':'bell-ringing'}"></i><span>${ch.alerte?'Normal':'Plein'}</span></button>`:'<div></div>';
     const reouvBtn=s==='cloture'?`<button class="chantier-btn green" onclick="reouvrir(${ch.id})"><i class="ti ti-rotate-clockwise"></i><span>Rouvrir</span></button>`:'';
     return `<div class="chantier-card ${s==='alerte'?'alerte':s==='vieilli'?'vieilli':s==='cloture'?'cloture':''}">
@@ -1352,6 +1374,10 @@ async function saveEditInterv(){
 }
 
 // ─── STOCK MANUEL ────────────────────────────────────────
+function toggleACollecterSC(){
+  const checked=document.getElementById('ch-a-collecter-sc').checked;
+  document.getElementById('ch-a-collecter-sc-zone').style.display=checked?'block':'none';
+}
 function toggleALivrer(){
   const checked=document.getElementById('ch-a-livrer').checked;
   document.getElementById('ch-a-livrer-zone').style.display=checked?'block':'none';
@@ -1949,7 +1975,8 @@ async function saveChantier(){
   const aLivrerChecked=document.getElementById('ch-a-livrer').checked;
   const aLivrerQtys={};
   if(aLivrerChecked){CONTENANTS.forEach(c=>{aLivrerQtys[c.key]=parseInt(document.getElementById('chL-'+c.key)?.value)||0;});}
-  const data={nom,rue:document.getElementById('ch-rue').value.trim(),ville:document.getElementById('ch-ville').value.trim(),codePostal:document.getElementById('ch-codePostal').value.trim(),complement:document.getElementById('ch-complement').value.trim(),contactNom:document.getElementById('ch-contact-nom').value.trim(),contactTel:document.getElementById('ch-contact-tel').value.trim(),contactRole:document.getElementById('ch-contact-role').value.trim(),gps:chantierGPS||null,prochaineCollecte:document.getElementById('ch-prochaine-collecte').value||null,aLivrer:aLivrerChecked,aLivrerQtys:aLivrerChecked?aLivrerQtys:{},aLivrerNote:aLivrerChecked?document.getElementById('ch-livrer-note').value.trim():''};
+  const aCollecterChecked=document.getElementById('ch-a-collecter-sc')?.checked||false;
+  const data={nom,rue:document.getElementById('ch-rue').value.trim(),ville:document.getElementById('ch-ville').value.trim(),codePostal:document.getElementById('ch-codePostal').value.trim(),complement:document.getElementById('ch-complement').value.trim(),contactNom:document.getElementById('ch-contact-nom').value.trim(),contactTel:document.getElementById('ch-contact-tel').value.trim(),contactRole:document.getElementById('ch-contact-role').value.trim(),gps:chantierGPS||null,prochaineCollecte:document.getElementById('ch-prochaine-collecte').value||null,aLivrer:aLivrerChecked,aLivrerQtys:aLivrerChecked?aLivrerQtys:{},aLivrerNote:aLivrerChecked?document.getElementById('ch-livrer-note').value.trim():'',aCollecterSansContenant:aCollecterChecked,aCollecterNote:aCollecterChecked?document.getElementById('ch-collecter-note').value.trim():''};
   if(editingChantierId){const ch=state.chantiers.find(x=>x.id===editingChantierId);if(ch)Object.assign(ch,data);}
   else{const n={id:state.nextChantierId++,clientId:currentClientId,cloture:false,alerte:false,lastInterventionDate:null,lastBsdNum:null,lastBsdType:null,...data};CONTENANTS.forEach(c=>{n[c.key]=0;});state.chantiers.push(n);}
   closeModal('modal-chantier');renderAll();await saveToCloud();showToast('✓ Chantier enregistré');
