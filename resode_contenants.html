@@ -313,24 +313,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 @media(min-width:480px){.modal,.menu-sheet{border-radius:var(--radius-lg);margin:auto}.modal-overlay,.menu-overlay{align-items:center}}
 @media print{
   @page{margin:8mm;size:A4}
-  body *{display:none!important}
-  #pdf-content,#pdf-content *{display:block!important}
-  #pdf-content{font-size:10px;border:none!important;padding:0!important}
-  .pdf-header{display:flex!important;margin-bottom:6px;padding-bottom:6px;border-bottom:2px solid #2E7D32}
-  .pdf-logo{max-width:100px;display:block!important}
-  .pdf-company{font-size:9px;text-align:right}
-  .pdf-title{padding:4px;font-size:11px;margin-bottom:6px;text-align:center;background:#2E7D32;color:#fff}
+  .app-header,.breadcrumb,.sync-bar,.vieill-banner,.stats-bar,.tabs,.modal-handle,.btn-submit,.btn-secondary,.detail-actions,.no-print{display:none!important}
+  .modal-overlay{position:static!important;background:none!important;display:block!important}
+  .modal{border-radius:0!important;max-height:none!important;overflow:visible!important;padding:0!important;box-shadow:none!important;animation:none!important}
+  body{background:#fff}
+  .pdf-preview{border:none!important;padding:0!important;font-size:10px}
+  .pdf-header{margin-bottom:6px;padding-bottom:6px}
+  .pdf-logo{max-width:110px}
+  .pdf-company{font-size:9px}
+  .pdf-title{padding:4px;font-size:11px;margin-bottom:6px}
   .pdf-section{margin-bottom:5px}
-  .pdf-section-title{font-size:8px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #eee;padding-bottom:2px;margin-bottom:3px;color:#888}
-  .pdf-row{display:flex!important;gap:8px;margin-bottom:1px}
-  .pdf-lbl{font-weight:600;min-width:80px;color:#666;font-size:9px;flex-shrink:0}
-  .pdf-val{flex:1;font-size:9px}
-  .pdf-contenants{display:grid!important;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:3px}
-  .pdf-contenant{background:#f8f9f8;border:1px solid #ddd;border-radius:3px;padding:3px;text-align:center}
-  .pdf-contenant-qty{font-size:13px;font-weight:700;color:#2E7D32}
-  .pdf-contenant-lbl{font-size:8px;color:#666}
-  .pdf-sig-area{border:1px solid #ddd;min-height:45px;padding:6px;background:#fafafa;display:flex!important;align-items:center;justify-content:center}
-  .pdf-footer{margin-top:4px;padding-top:4px;border-top:1px solid #eee;font-size:8px;color:#888;text-align:center}
+  .pdf-section-title{font-size:8px;padding-bottom:2px;margin-bottom:3px}
+  .pdf-row{margin-bottom:1px}
+  .pdf-lbl{font-size:9px;min-width:80px}
+  .pdf-val{font-size:9px}
+  .pdf-contenants{grid-template-columns:repeat(4,1fr);gap:3px;margin-top:3px}
+  .pdf-contenant{padding:3px}
+  .pdf-contenant-qty{font-size:13px}
+  .pdf-contenant-lbl{font-size:8px}
+  .pdf-sig-area{min-height:45px;padding:6px}
+  .pdf-footer{margin-top:4px;padding-top:4px;font-size:8px}
 }
 </style>
 </head>
